@@ -33,22 +33,24 @@ window.onload = function(){
     vm = new Vue({
       el:"#app",
       data:{
-        canvas:       0,
-        scene:        new THREE.Scene(),
-        renderer:     new THREE.WebGLRenderer({anitialias: true}),
-        camera:       new THREE.PerspectiveCamera(45,1,1,10000),
-        controls:     0,
-        light:        new THREE.DirectionalLight(0xFFFFFF, 1),
-        human:        new THREE.Group(),
+        canvas:       	0,
+        scene:        	new THREE.Scene(),
+        renderer:     	new THREE.WebGLRenderer({anitialias: true}),
+        camera:       	new THREE.PerspectiveCamera(45,1,1,10000),
+        controls:     	0,
+        light:        	new THREE.DirectionalLight(0xFFFFFF, 1),
+        human:        	new THREE.Group(),
+				//キーフレームトラックを保持(データベースとのデータ共有に使用)
+				keyframetracks:	[],
         //アニメーションクリップを保持(データベースとのデータ共有に使用)
-        clips:        [],
+        clips:        	[],
 				//ミキサーを保持(アニメーション実行に使用)
-				mixers:				[],
+				mixers:					[],
         //アニメーションアクションを保持(アニメーション実行に使用)
-        actions:      [],
-        eventstart:   EVENTNAME_START,
-        eventmove:    EVENTNAME_MOVE,
-        eventend:     EVENTNAME_END
+        actions:      	[],
+        eventstart:   	EVENTNAME_START,
+        eventmove:    	EVENTNAME_MOVE,
+        eventend:     	EVENTNAME_END
       },
       methods:{
 				//データが変更された時実行する
@@ -57,10 +59,14 @@ window.onload = function(){
         },
 				//アニメーションを再生する
 				animate:function(e){
+					console.log("再生中");
 					requestAnimationFrame(this.animate);
 
 					this.mixers[0].update(0.01);
 					this.mixers[1].update(0.01);
+					this.mixers[2].update(0.01);
+					this.mixers[3].update(0.01);
+					this.mixers[4].update(0.01);
 
 					this.controls.update();
 
@@ -158,52 +164,383 @@ window.onload = function(){
 
         this.scene.add(this.human);
 
+
+
         //これより以下でfssからアニメーションクリップを作成
-				var rotationKeyframeTrackJSON_Body = {
+				//各部位毎-各軸毎にKeyframeTrackJSONを作成
+				var rotationKeyframeTrackJSON_Body_x = {
+					name:".children[0].rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_Body_y = {
 					name:".children[0].rotation[y]",
 					type:"number",
 					times:[0],
 					values:[0]
 				};
-				var rotationKeyframeTrackJSON_RightArm = {
-					name:".rotation[y]",
-					type:"number",
-					times:[0],
-					values:[0]
-				};
-				var rotationKeyframeTrackJSON_RightArm2 = {
+				var rotationKeyframeTrackJSON_Body_z = {
 					name:".children[0].rotation[z]",
 					type:"number",
 					times:[0],
 					values:[0]
 				};
 
-				var clipJSON = {
+				var rotationKeyframeTrackJSON_RightArm1_x = {
+					name:".rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightArm1_y = {
+					name:".rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightArm1_z = {
+					name:".rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_RightArm2_x = {
+					name:".children[0].rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightArm2_y = {
+					name:".children[0].rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightArm2_z = {
+					name:".children[0].rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_LeftArm1_x = {
+					name:".rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftArm1_y = {
+					name:".rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftArm1_z = {
+					name:".rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_LeftArm2_x = {
+					name:".children[0].rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftArm2_y = {
+					name:".children[0].rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftArm2_z = {
+					name:".children[0].rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_Waist_x = {
+					name:".children[1].rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_Waist_y = {
+					name:".children[1].rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_Waist_z = {
+					name:".children[1].rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_RightFoot1_x = {
+					name:".rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightFoot1_y = {
+					name:".rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightFoot1_z = {
+					name:".rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_RightFoot2_x = {
+					name:".children[0].rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightFoot2_y = {
+					name:".children[0].rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_RightFoot2_z = {
+					name:".children[0].rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_LeftFoot1_x = {
+					name:".rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftFoot1_y = {
+					name:".rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftFoot1_z = {
+					name:".rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				var rotationKeyframeTrackJSON_LeftFoot2_x = {
+					name:".children[0].rotation[x]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftFoot2_y = {
+					name:".children[0].rotation[y]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+				var rotationKeyframeTrackJSON_LeftFoot2_z = {
+					name:".children[0].rotation[z]",
+					type:"number",
+					times:[0],
+					values:[0]
+				};
+
+				this.keyframetracks.push(rotationKeyframeTrackJSON_Body_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_Body_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_Body_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightArm1_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightArm1_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightArm1_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightArm2_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightArm2_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightArm2_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftArm1_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftArm1_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftArm1_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftArm2_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftArm2_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftArm2_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_Waist_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_Waist_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_Waist_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightFoot1_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightFoot1_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightFoot1_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightFoot2_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightFoot2_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_RightFoot2_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftFoot1_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftFoot1_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftFoot1_z);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftFoot2_x);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftFoot2_y);
+				this.keyframetracks.push(rotationKeyframeTrackJSON_LeftFoot2_z);
+				//keyframetracksは30個
+
+
+				//スナップショットからデータを取得
+				this.keyframetracks[0].times = fss.child('AnimationClip/body/x/times').val();
+				this.keyframetracks[0].values = fss.child('AnimationClip/body/x/values').val();
+				this.keyframetracks[1].times = fss.child('AnimationClip/body/y/times').val();
+				this.keyframetracks[1].values = fss.child('AnimationClip/body/y/values').val();
+				this.keyframetracks[2].times = fss.child('AnimationClip/body/z/times').val();
+				this.keyframetracks[2].values = fss.child('AnimationClip/body/z/values').val();
+
+				this.keyframetracks[3].times = fss.child('AnimationClip/right_arm_1/x/times').val();
+				this.keyframetracks[3].values = fss.child('AnimationClip/right_arm_1/x/values').val();
+				this.keyframetracks[4].times = fss.child('AnimationClip/right_arm_1/y/times').val();
+				this.keyframetracks[4].values = fss.child('AnimationClip/right_arm_1/y/values').val();
+				this.keyframetracks[5].times = fss.child('AnimationClip/right_arm_1/z/times').val();
+				this.keyframetracks[5].values = fss.child('AnimationClip/right_arm_1/z/values').val();
+
+				this.keyframetracks[6].times = fss.child('AnimationClip/right_arm_2/x/times').val();
+				this.keyframetracks[6].values = fss.child('AnimationClip/right_arm_2/x/values').val();
+				this.keyframetracks[7].times = fss.child('AnimationClip/right_arm_2/y/times').val();
+				this.keyframetracks[7].values = fss.child('AnimationClip/right_arm_2/y/values').val();
+				this.keyframetracks[8].times = fss.child('AnimationClip/right_arm_2/z/times').val();
+				this.keyframetracks[8].values = fss.child('AnimationClip/right_arm_2/z/values').val();
+
+				this.keyframetracks[9].times = fss.child('AnimationClip/left_arm_1/x/times').val();
+				this.keyframetracks[9].values = fss.child('AnimationClip/left_arm_1/x/values').val();
+				this.keyframetracks[10].times = fss.child('AnimationClip/left_arm_1/y/times').val();
+				this.keyframetracks[10].values = fss.child('AnimationClip/left_arm_1/y/values').val();
+				this.keyframetracks[11].times = fss.child('AnimationClip/left_arm_1/z/times').val();
+				this.keyframetracks[11].values = fss.child('AnimationClip/left_arm_1/z/values').val();
+
+				this.keyframetracks[12].times = fss.child('AnimationClip/left_arm_2/x/times').val();
+				this.keyframetracks[12].values = fss.child('AnimationClip/left_arm_2/x/values').val();
+				this.keyframetracks[13].times = fss.child('AnimationClip/left_arm_2/y/times').val();
+				this.keyframetracks[13].values = fss.child('AnimationClip/left_arm_2/y/values').val();
+				this.keyframetracks[14].times = fss.child('AnimationClip/left_arm_2/z/times').val();
+				this.keyframetracks[14].values = fss.child('AnimationClip/left_arm_2/z/values').val();
+
+				this.keyframetracks[15].times = fss.child('AnimationClip/waist/x/times').val();
+				this.keyframetracks[15].values = fss.child('AnimationClip/waist/x/values').val();
+				this.keyframetracks[16].times = fss.child('AnimationClip/waist/y/times').val();
+				this.keyframetracks[16].values = fss.child('AnimationClip/waist/y/values').val();
+				this.keyframetracks[17].times = fss.child('AnimationClip/waist/z/times').val();
+				this.keyframetracks[17].values = fss.child('AnimationClip/waist/z/values').val();
+
+				this.keyframetracks[18].times = fss.child('AnimationClip/right_foot_1/x/times').val();
+				this.keyframetracks[18].values = fss.child('AnimationClip/right_foot_1/x/values').val();
+				this.keyframetracks[19].times = fss.child('AnimationClip/right_foot_1/y/times').val();
+				this.keyframetracks[19].values = fss.child('AnimationClip/right_foot_1/y/values').val();
+				this.keyframetracks[20].times = fss.child('AnimationClip/right_foot_1/z/times').val();
+				this.keyframetracks[20].values = fss.child('AnimationClip/right_foot_1/z/values').val();
+
+				this.keyframetracks[21].times = fss.child('AnimationClip/right_foot_2/x/times').val();
+				this.keyframetracks[21].values = fss.child('AnimationClip/right_foot_2/x/values').val();
+				this.keyframetracks[22].times = fss.child('AnimationClip/right_foot_2/y/times').val();
+				this.keyframetracks[22].values = fss.child('AnimationClip/right_foot_2/y/values').val();
+				this.keyframetracks[23].times = fss.child('AnimationClip/right_foot_2/z/times').val();
+				this.keyframetracks[23].values = fss.child('AnimationClip/right_foot_2/z/values').val();
+
+				this.keyframetracks[24].times = fss.child('AnimationClip/left_foot_1/x/times').val();
+				this.keyframetracks[24].values = fss.child('AnimationClip/left_foot_1/x/values').val();
+				this.keyframetracks[25].times = fss.child('AnimationClip/left_foot_1/y/times').val();
+				this.keyframetracks[25].values = fss.child('AnimationClip/left_foot_1/y/values').val();
+				this.keyframetracks[26].times = fss.child('AnimationClip/left_foot_1/z/times').val();
+				this.keyframetracks[26].values = fss.child('AnimationClip/left_foot_1/z/values').val();
+
+				this.keyframetracks[27].times = fss.child('AnimationClip/left_foot_2/x/times').val();
+				this.keyframetracks[27].values = fss.child('AnimationClip/left_foot_2/x/values').val();
+				this.keyframetracks[28].times = fss.child('AnimationClip/left_foot_2/y/times').val();
+				this.keyframetracks[28].values = fss.child('AnimationClip/left_foot_2/y/values').val();
+				this.keyframetracks[29].times = fss.child('AnimationClip/left_foot_2/z/times').val();
+				this.keyframetracks[29].values = fss.child('AnimationClip/left_foot_2/z/values').val();
+
+
+				//clipJSONをkeyframetracksから作成
+				var clipJSON_Human = {
 					duration: -1,
 					name:"human_animation",
 					tracks: [
-						rotationKeyframeTrackJSON_Body
+						this.keyframetracks[0],
+						this.keyframetracks[1],
+						this.keyframetracks[2],
+
+						this.keyframetracks[15],
+						this.keyframetracks[16],
+						this.keyframetracks[17]
 					]
 				};
-				var clipJSON_2 = {
+				var clipJSON_RightArm = {
 					duration: -1,
 					name:"right_arm_animation",
 					tracks: [
-						rotationKeyframeTrackJSON_RightArm,
-						rotationKeyframeTrackJSON_RightArm2
+						this.keyframetracks[3],
+						this.keyframetracks[4],
+						this.keyframetracks[5],
+
+						this.keyframetracks[6],
+						this.keyframetracks[7],
+						this.keyframetracks[8]
+					]
+				};
+				var clipJSON_LeftArm = {
+					duration: -1,
+					name:"left_arm_animation",
+					tracks: [
+						this.keyframetracks[9],
+						this.keyframetracks[10],
+						this.keyframetracks[11],
+
+						this.keyframetracks[12],
+						this.keyframetracks[13],
+						this.keyframetracks[14]
+					]
+				};
+				var clipJSON_RightFoot = {
+					duration: -1,
+					name:"right_foot_animation",
+					tracks: [
+						this.keyframetracks[18],
+						this.keyframetracks[19],
+						this.keyframetracks[20],
+
+						this.keyframetracks[21],
+						this.keyframetracks[22],
+						this.keyframetracks[23]
+					]
+				};
+				var clipJSON_LeftFoot = {
+					duration: -1,
+					name:"left_foot_animation",
+					tracks: [
+						this.keyframetracks[24],
+						this.keyframetracks[25],
+						this.keyframetracks[26],
+
+						this.keyframetracks[27],
+						this.keyframetracks[28],
+						this.keyframetracks[29]
 					]
 				};
 
-				var clip = THREE.AnimationClip.parse(clipJSON);
-				var clip2 = THREE.AnimationClip.parse(clipJSON_2);
-				this.clips.push(clip);
-				this.clips.push(clip2);
 
-
-				this.clips[1].tracks[0].times = fss.child('AnimationClip/right_arm_1//times').val();
-				this.clips[1].tracks[0].values = fss.child('AnimationClip/right_arm_1/y/values').val();
-				this.clips[1].tracks[1].times = fss.child('AnimationClip/right_arm_2/z/times').val();
-				this.clips[1].tracks[1].values = fss.child('AnimationClip/right_arm_2/z/values').val();
+				var clip_Human = THREE.AnimationClip.parse(clipJSON_Human);
+				var clip_RightArm = THREE.AnimationClip.parse(clipJSON_RightArm);
+				var clip_LeftArm = THREE.AnimationClip.parse(clipJSON_LeftArm);
+				var clip_RightFoot = THREE.AnimationClip.parse(clipJSON_RightFoot);
+				var clip_LeftFoot = THREE.AnimationClip.parse(clipJSON_LeftFoot);
+				this.clips.push(clip_Human);
+				this.clips.push(clip_RightArm);
+				this.clips.push(clip_LeftArm);
+				this.clips.push(clip_RightFoot);
+				this.clips.push(clip_LeftFoot);
 
 
 				var human_mixer = new THREE.AnimationMixer(this.human);
@@ -217,15 +554,29 @@ window.onload = function(){
 				this.mixers.push(right_arm_mixer);
 				this.mixers.push(left_arm_mixer);
 
-		    var human_action = human_mixer.clipAction(this.clips[0]);
-		    var right_arm_action = right_arm_mixer.clipAction(this.clips[1]);
+
+		    var human_action = this.mixers[0].clipAction(this.clips[0]);
+		    var right_arm_action = this.mixers[1].clipAction(this.clips[1]);
+				var left_arm_action = this.mixers[2].clipAction(this.clips[2]);
+				var right_foot_action = this.mixers[3].clipAction(this.clips[3]);
+				var left_foot_action = this.mixers[4].clipAction(this.clips[4]);
+
+
 				this.actions.push(human_action);
 				this.actions.push(right_arm_action);
+				this.actions.push(left_arm_action);
+				this.actions.push(right_foot_action);
+				this.actions.push(left_foot_action);
+
 
 		    this.actions[0].play();
 		    this.actions[1].play();
+				this.actions[2].play();
+				this.actions[3].play();
+				this.actions[4].play();
 
-        this.renderer.render(this.scene, this.camera)
+        this.renderer.render(this.scene, this.camera);
+
 				this.animate();
 
       }
