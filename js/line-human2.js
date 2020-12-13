@@ -40,6 +40,9 @@ window.onload = function(){
         controls:     	0,
         light:        	new THREE.DirectionalLight(0xFFFFFF, 1),
         human:        	new THREE.Group(),
+				mouse:					new THREE.Vector2(),
+				raycaster: 			new THREE.Raycaster(),
+				intersects:			0,
 				//キーフレームトラックを保持(データベースとのデータ共有に使用)
 				keyframetracks:	[],
         //アニメーションクリップを保持(データベースとのデータ共有に使用)
@@ -59,8 +62,9 @@ window.onload = function(){
         },
 				//アニメーションを再生する
 				animate:function(e){
+					this.controls.enabled = true;
+
 					console.log("再生中");
-					requestAnimationFrame(this.animate);
 
 					this.mixers[0].update(0.01);
 					this.mixers[1].update(0.01);
@@ -72,6 +76,25 @@ window.onload = function(){
 
 					this.renderer.render(this.scene, this.camera);
 
+					if(this.actions[0].isRunning() == false &&
+							this.actions[1].isRunning() == false &&
+							this.actions[2].isRunning() == false &&
+							this.actions[3].isRunning() == false &&
+							this.actions[4].isRunning() == false){
+						const flag = true;
+						try {
+								if (flag) {
+										this.controls.enabled = false;
+										throw new Error('終了します');
+								};
+						} catch (e) {
+								console.log(e.message);
+						};
+
+					}else{
+						requestAnimationFrame(this.animate);
+					};
+
 				}
       },
       mounted(){
@@ -81,9 +104,12 @@ window.onload = function(){
         this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
         this.camera.aspect = this.canvas.clientWidth / this.canvas.clientHeight;
         this.camera.position.set(0, 400, 1000);
-        this.camera.lookAt(new THREE.Vector3(0,100,0));
+        this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         this.controls = new THREE.OrbitControls(this.camera);
+				this.controls.target.set(0, 250, 0);
+				this.controls.enableZoom = false;
+				this.controls.enabled = false;
 
         //地面を作成
         const plane2 = new THREE.GridHelper(600);
@@ -463,6 +489,7 @@ window.onload = function(){
 				this.keyframetracks[29].values = fss.child('AnimationClip/left_foot_2/z/values').val();
 
 
+
 				//clipJSONをkeyframetracksから作成
 				var clipJSON_Human = {
 					duration: -1,
@@ -551,8 +578,8 @@ window.onload = function(){
 				this.mixers.push(human_mixer);
 				this.mixers.push(right_arm_mixer);
 				this.mixers.push(left_arm_mixer);
-				this.mixers.push(right_arm_mixer);
-				this.mixers.push(left_arm_mixer);
+				this.mixers.push(right_foot_mixer);
+				this.mixers.push(left_foot_mixer);
 
 
 		    var human_action = this.mixers[0].clipAction(this.clips[0]);
@@ -560,8 +587,12 @@ window.onload = function(){
 				var left_arm_action = this.mixers[2].clipAction(this.clips[2]);
 				var right_foot_action = this.mixers[3].clipAction(this.clips[3]);
 				var left_foot_action = this.mixers[4].clipAction(this.clips[4]);
-
-
+				//ループ設定(１回のみ)
+				human_action.setLoop(THREE.LoopOnce);
+				right_arm_action.setLoop(THREE.LoopOnce);
+				left_arm_action.setLoop(THREE.LoopOnce);
+				right_foot_action.setLoop(THREE.LoopOnce);
+				left_foot_action.setLoop(THREE.LoopOnce);
 				this.actions.push(human_action);
 				this.actions.push(right_arm_action);
 				this.actions.push(left_arm_action);
@@ -575,9 +606,11 @@ window.onload = function(){
 				this.actions[3].play();
 				this.actions[4].play();
 
+
+				this.controls.update();
         this.renderer.render(this.scene, this.camera);
 
-				this.animate();
+				//this.animate();
 
       }
     });
