@@ -85,6 +85,14 @@ window.onload = function(){
 						try {
 								if (flag) {
 										this.controls.enabled = false;
+										//アニメーションをもう一度再生する時に備えて
+										//リセットしておく
+										this.actions[0].reset();
+										this.actions[1].reset();
+										this.actions[2].reset();
+										this.actions[3].reset();
+										this.actions[4].reset();
+
 										throw new Error('終了します');
 								};
 						} catch (e) {
@@ -587,28 +595,30 @@ window.onload = function(){
 				var left_arm_action = this.mixers[2].clipAction(this.clips[2]);
 				var right_foot_action = this.mixers[3].clipAction(this.clips[3]);
 				var left_foot_action = this.mixers[4].clipAction(this.clips[4]);
-				//ループ設定(１回のみ)
-				human_action.setLoop(THREE.LoopOnce);
-				right_arm_action.setLoop(THREE.LoopOnce);
-				left_arm_action.setLoop(THREE.LoopOnce);
-				right_foot_action.setLoop(THREE.LoopOnce);
-				left_foot_action.setLoop(THREE.LoopOnce);
 				this.actions.push(human_action);
 				this.actions.push(right_arm_action);
 				this.actions.push(left_arm_action);
 				this.actions.push(right_foot_action);
 				this.actions.push(left_foot_action);
+				//ループ設定(１回のみ)
+				this.actions[0].setLoop(THREE.LoopOnce);
+				this.actions[1].setLoop(THREE.LoopOnce);
+				this.actions[2].setLoop(THREE.LoopOnce);
+				this.actions[3].setLoop(THREE.LoopOnce);
+				this.actions[4].setLoop(THREE.LoopOnce);
 
-
-		    this.actions[0].play();
-		    this.actions[1].play();
+				this.actions[0].play();
+				this.actions[1].play();
 				this.actions[2].play();
 				this.actions[3].play();
 				this.actions[4].play();
 
 
+
 				this.controls.update();
         this.renderer.render(this.scene, this.camera);
+
+
 
 				//this.animate();
 
