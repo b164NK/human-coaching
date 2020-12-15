@@ -60,9 +60,23 @@ window.onload = function(){
         changed_DB_bySomeone:function(ss){
 
         },
+				//Orbit操作に対して描画を更新するためのメソッド
+				OrbitStart:function(e){
+					e.preventDefault();
+					this.canvas.addEventListener(this.eventmove,this.OrbitMove);
+					this.canvas.addEventListener(this.eventend,this.OrbitEnd);
+				},
+				OrbitMove:function(e){
+					this.controls.update();
+					console.log("from OrbitMove");
+					this.renderer.render(this.scene, this.camera);
+				},
+				OrbitEnd:function(e){
+					this.canvas.removeEventListener(this.eventmove,this.OrbitMove);
+					this.canvas.removeEventListener(this.eventend,this.OrbitEnd);
+				},
 				//アニメーションを再生する
 				animate:function(e){
-					this.controls.enabled = true;
 
 					console.log("再生中");
 
@@ -72,8 +86,30 @@ window.onload = function(){
 					this.mixers[3].update(0.01);
 					this.mixers[4].update(0.01);
 
-					this.controls.update();
+					//var time = 3;
+				  //.actions[0].time = time;
+					//this.actions[1].time = time;
+					//this.actions[2].time = time;
+					//this.actions[3].time = time;
+					//this.actions[4].time = time;
 
+				  //this.mixers[0].time = time;
+					//this.mixers[1].time = time;
+					//this.mixers[2].time = time;
+					//this.mixers[3].time = time;
+					//this.mixers[4].time = time;
+
+				  //this.mixers[0].update(0);
+					//this.mixers[1].update(0);
+					//this.mixers[2].update(0);
+					//this.mixers[3].update(0);
+					//this.mixers[4].update(0);
+
+
+
+
+
+					this.controls.update();
 					this.renderer.render(this.scene, this.camera);
 
 					if(this.actions[0].isRunning() == false &&
@@ -84,7 +120,6 @@ window.onload = function(){
 						const flag = true;
 						try {
 								if (flag) {
-										this.controls.enabled = false;
 										//アニメーションをもう一度再生する時に備えて
 										//リセットしておく
 										this.actions[0].reset();
@@ -92,6 +127,7 @@ window.onload = function(){
 										this.actions[2].reset();
 										this.actions[3].reset();
 										this.actions[4].reset();
+
 
 										throw new Error('終了します');
 								};
@@ -104,6 +140,7 @@ window.onload = function(){
 					};
 
 				}
+
       },
       mounted(){
         this.canvas = document.getElementById('canvas');
@@ -114,7 +151,7 @@ window.onload = function(){
         this.camera.position.set(0, 400, 1000);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
 
-        this.controls = new THREE.OrbitControls(this.camera);
+        this.controls = new THREE.OrbitControls(this.camera, this.canvas);
 				this.controls.target.set(0, 250, 0);
 				this.controls.enableZoom = false;
 				this.controls.enabled = false;
@@ -619,6 +656,10 @@ window.onload = function(){
         this.renderer.render(this.scene, this.camera);
 
 
+
+				this.controls.enabled = true;
+				this.canvas.addEventListener(this.eventstart,
+					this.OrbitStart,{passive:false});
 
 				//this.animate();
 
