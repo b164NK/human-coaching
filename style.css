@@ -7,12 +7,12 @@ html {
 }
 
 body {
-	margin: 0;
+	margin: 1;
 	overflow: hidden;
 }
 
 #canvas {
-	width: 900px;
-	height: 800px;
+	width: 500px;
+	height: 500px;
 	margin: 0 0 0 0;
 }

@@ -34,6 +34,8 @@ window.onload = function(){
       el:"#app",
       data:{
         canvas:       	0,
+				bar:						0,		//シークバーのDOM要素
+				bar_value:			0,
         scene:        	new THREE.Scene(),
         renderer:     	new THREE.WebGLRenderer({anitialias: true}),
         camera:       	new THREE.PerspectiveCamera(45,1,1,10000),
@@ -86,29 +88,6 @@ window.onload = function(){
 					this.mixers[3].update(0.01);
 					this.mixers[4].update(0.01);
 
-					//var time = 3;
-				  //.actions[0].time = time;
-					//this.actions[1].time = time;
-					//this.actions[2].time = time;
-					//this.actions[3].time = time;
-					//this.actions[4].time = time;
-
-				  //this.mixers[0].time = time;
-					//this.mixers[1].time = time;
-					//this.mixers[2].time = time;
-					//this.mixers[3].time = time;
-					//this.mixers[4].time = time;
-
-				  //this.mixers[0].update(0);
-					//this.mixers[1].update(0);
-					//this.mixers[2].update(0);
-					//this.mixers[3].update(0);
-					//this.mixers[4].update(0);
-
-
-
-
-
 					this.controls.update();
 					this.renderer.render(this.scene, this.camera);
 
@@ -139,6 +118,43 @@ window.onload = function(){
 						requestAnimationFrame(this.animate);
 					};
 
+				},
+				FrameNumber:function(e){
+					console.log(this.bar.value);
+					this.bar_value = this.bar.value;
+
+				},
+				FrameSelecte:function(e){
+					var time = this.bar.value;
+				  this.actions[0].time = time;
+					this.actions[1].time = time;
+					this.actions[2].time = time;
+					this.actions[3].time = time;
+					this.actions[4].time = time;
+
+				  this.mixers[0].time = time;
+					this.mixers[1].time = time;
+					this.mixers[2].time = time;
+					this.mixers[3].time = time;
+					this.mixers[4].time = time;
+
+				  this.mixers[0].update(0);
+					this.mixers[1].update(0);
+					this.mixers[2].update(0);
+					this.mixers[3].update(0);
+					this.mixers[4].update(0);
+
+					this.controls.update();
+					this.renderer.render(this.scene, this.camera);
+					//console.log("from FrameSelecte");
+
+					//アニメーションをもう一度再生する時に備えて
+					//リセットしておく
+					this.actions[0].reset();
+					this.actions[1].reset();
+					this.actions[2].reset();
+					this.actions[3].reset();
+					this.actions[4].reset();
 				}
 
       },
@@ -150,11 +166,19 @@ window.onload = function(){
         this.camera.aspect = this.canvas.clientWidth / this.canvas.clientHeight;
         this.camera.position.set(0, 400, 1000);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
-
+				//Orbitカメラの設定
         this.controls = new THREE.OrbitControls(this.camera, this.canvas);
 				this.controls.target.set(0, 250, 0);
 				this.controls.enableZoom = false;
 				this.controls.enabled = false;
+				//シークバーの設定
+				this.bar = document.getElementById('timebar');
+				this.bar.addEventListener('input'
+					,this.FrameNumber);//値変更時(ドラッグ中)のイベント
+				this.bar.addEventListener('change'
+					,this.FrameSelecte);//値変更時(タッチが離れた時)のイベント
+
+
 
         //地面を作成
         const plane2 = new THREE.GridHelper(600);
