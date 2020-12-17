@@ -1,4 +1,4 @@
-@charset "UTF-8";
+et "UTF-8";
 html {
 	width: 80%;
 	font-family: sans-serif;
@@ -9,6 +9,10 @@ html {
 body {
 	margin: 1;
 	overflow: hidden;
+}
+
+#app{
+	display:	flex;
 }
 
 #canvas {

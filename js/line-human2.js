@@ -53,6 +53,8 @@ window.onload = function(){
 				mixers:					[],
         //アニメーションアクションを保持(アニメーション実行に使用)
         actions:      	[],
+				//再生時にactionsをリセットする必要があるかのチェックをするフラグ
+				reset_flag:			false,
         eventstart:   	EVENTNAME_START,
         eventmove:    	EVENTNAME_MOVE,
         eventend:     	EVENTNAME_END
@@ -79,6 +81,15 @@ window.onload = function(){
 				},
 				//アニメーションを再生する
 				animate:function(e){
+					if(this.reset_flag){
+						//アニメーションをリセットしておく
+						this.actions[0].reset();
+						this.actions[1].reset();
+						this.actions[2].reset();
+						this.actions[3].reset();
+						this.actions[4].reset();
+						this.reset_flag = false;
+					}
 
 					console.log("再生中");
 
@@ -144,17 +155,11 @@ window.onload = function(){
 					this.mixers[3].update(0);
 					this.mixers[4].update(0);
 
+
 					this.controls.update();
 					this.renderer.render(this.scene, this.camera);
 					//console.log("from FrameSelecte");
-
-					//アニメーションをもう一度再生する時に備えて
-					//リセットしておく
-					this.actions[0].reset();
-					this.actions[1].reset();
-					this.actions[2].reset();
-					this.actions[3].reset();
-					this.actions[4].reset();
+					this.reset_flag = true;
 				}
 
       },
