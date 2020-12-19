@@ -16,7 +16,6 @@ window.onload = function(){
 	//更新内容を一時保存する変数
 	var updates = {};
 
-
 	function renewDB(update_set){
 		//update_setは、行われたDOM操作に関して記録したリストとする
 		console.log("DB update");
@@ -34,8 +33,14 @@ window.onload = function(){
       el:"#app",
       data:{
         canvas:       	0,
-				bar:						0,		//シークバーのDOM要素
+				bar:						0,		//時間用シークバーのDOM要素
 				bar_value:			0,
+				//選ばれた部位を保持
+				selected_parts:	0,
+				//部位が選択された時rotationを保持
+				rotationX_bar:	0,
+				rotationY_bar:	0,
+				rotationZ_bar:	0,
         scene:        	new THREE.Scene(),
         renderer:     	new THREE.WebGLRenderer({anitialias: true}),
         camera:       	new THREE.PerspectiveCamera(45,1,1,10000),
@@ -81,8 +86,8 @@ window.onload = function(){
 				},
 				//アニメーションを再生する
 				animate:function(e){
+					//リセットが必要かどうかのチェック
 					if(this.reset_flag){
-						//アニメーションをリセットしておく
 						this.actions[0].reset();
 						this.actions[1].reset();
 						this.actions[2].reset();
@@ -160,7 +165,73 @@ window.onload = function(){
 					this.renderer.render(this.scene, this.camera);
 					//console.log("from FrameSelecte");
 					this.reset_flag = true;
+				},
+				PartsSelect:function(e){
+
+					var v = document.getElementById('parts').value;
+
+					//vの値で部位を検索し、角度変更バーの初期位置を調整
+					//検索した部位は[selected_parts]に保持
+					switch(v){
+						case 'body':
+							console.log(this.human.children[0]);
+							this.selected_parts = this.human.children[0];
+							break;
+						case 'right_arm_1':
+							console.log(this.human.children[0].children[1]);
+							this.selected_parts = this.human.children[0].children[1];
+							break;
+						case 'right_arm_2':
+							console.log(this.human.children[0].children[1].children[0]);
+							this.selected_parts = this.human.children[0].children[1].children[0];
+							break;
+						case 'left_arm_1':
+							console.log(this.human.children[0].children[2]);
+							this.selected_parts = this.human.children[0].children[2];
+							break;
+						case 'left_arm_2':
+							console.log(this.human.children[0].children[2].children[0]);
+							this.selected_parts = this.human.children[0].children[2].children[0];
+							break;
+						case 'waist':
+							console.log(this.human.children[1]);
+							this.selected_parts = this.human.children[1];
+							break;
+						case 'right_foot_1':
+							console.log(this.human.children[1].children[0]);
+							this.selected_parts =  this.human.children[1].children[0];
+							break;
+						case 'right_foot_2':
+							console.log(this.human.children[1].children[0].children[0]);
+							this.selected_parts = this.human.children[1].children[0].children[0];
+							break;
+						case 'left_foot_1':
+							console.log(this.human.children[1].children[1]);
+							this.selected_parts = this.human.children[1].children[1];
+							break;
+						case 'left_foot_2':
+							console.log(this.human.children[1].children[1].children[0]);
+							this.selected_parts = this.human.children[1].children[1].children[0];
+							break;
+						default:
+							console.log("Error!");
+							break;
+
+					}
+
+					this.rotationX_bar = this.selected_parts.rotation.x;
+					this.rotationY_bar = this.selected_parts.rotation.y;
+					this.rotationZ_bar = this.selected_parts.rotation.z;
+				},
+				//角度バーが変わった時、描画中のオブジェクトに反映
+				changePartsRotation:functin(e){
+
+				},
+				//更新ボタンが押された時、更新内容を作成しDBに反映
+				makeUpdates:function(e){
+					console.log("makeUpdates");
 				}
+
 
       },
       mounted(){
@@ -176,7 +247,7 @@ window.onload = function(){
 				this.controls.target.set(0, 250, 0);
 				this.controls.enableZoom = false;
 				this.controls.enabled = false;
-				//シークバーの設定
+				//シークバーの設定...html上でできるかも
 				this.bar = document.getElementById('timebar');
 				this.bar.addEventListener('input'
 					,this.FrameNumber);//値変更時(ドラッグ中)のイベント

@@ -29,16 +29,26 @@
       <div>
         <button v-on:click="animate">再生</button>
         <input type="range" id="timebar" min="0" max="4" step="0.01" value="0">{{bar_value}}
-        <p>部位:プルダウンメニューを置く</p>
+        <p>部位:<select id="parts"　v-on:change="PartsSelect">
+                  <option>部位を選択</option>
+                  <option value="body">上半身</option>
+                  <option value="right_arm_1">右上腕</option>
+                  <option value="right_arm_2">右前腕</option>
+                  <option value="left_arm_1">左上腕</option>
+                  <option value="left_arm_2">左前腕</option>
+                  <option value="waist">下半身</option>
+                  <option value="right_foot_1">右大腿</option>
+                  <option value="right_foot_2">右下腿</option>
+                  <option value="left_foot_1">左大腿</option>
+                  <option value="left_foot_2">左下腿</option>
+                  </select></p>
         <p>角度:</p>
-        <p>x<input type="range" id="rotation_bar_x" min="0" max="360" step="0.01" value="0"></p>
-        <p>y<input type="range" id="rotation_bar_y" min="0" max="360" step="0.01" value="0"></p>
-        <p>z<input type="range" id="rotation_bar_z" min="0" max="360" step="0.01" value="0"></p>
-        <p><button>更新</button></p>
+        <p>x<input type="range" id="rotation_bar_x" min="0" max="6.28" step="0.01" v-bind:value="rotationX_bar"></p>
+        <p>y<input type="range" id="rotation_bar_y" min="0" max="6.28" step="0.01" v-bind:value="rotationY_bar"></p>
+        <p>z<input type="range" id="rotation_bar_z" min="0" max="6.28" step="0.01" v-bind:value="rotationZ_bar"></p>
+        <p><button v-on:click="makeUpdates">更新</button></p>
       </div>
 
     </div>
-
-
   </body>
 </html>
