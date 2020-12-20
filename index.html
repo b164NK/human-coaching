@@ -43,9 +43,15 @@
                   <option value="left_foot_2">左下腿</option>
                   </select></p>
         <p>角度:</p>
-        <p>x<input type="range" id="rotation_bar_x" min="0" max="6.28" step="0.01" v-bind:value="rotationX_bar"></p>
-        <p>y<input type="range" id="rotation_bar_y" min="0" max="6.28" step="0.01" v-bind:value="rotationY_bar"></p>
-        <p>z<input type="range" id="rotation_bar_z" min="0" max="6.28" step="0.01" v-bind:value="rotationZ_bar"></p>
+        <p>x<input type="range" id="rotation_bar_x" min="0" max="6.28" step="0.01"
+          v-model.number="rotationX_bar"
+          v-on:input="changePartsRotation"></p>
+        <p>y<input type="range" id="rotation_bar_y" min="0" max="6.28" step="0.01"
+          v-model.number="rotationY_bar"
+          v-on:input="changePartsRotation"></p>
+        <p>z<input type="range" id="rotation_bar_z" min="0" max="6.28" step="0.01"
+          v-model.number="rotationZ_bar"
+          v-on:input="changePartsRotation"></p>
         <p><button v-on:click="makeUpdates">更新</button></p>
       </div>
 

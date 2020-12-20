@@ -224,8 +224,22 @@ window.onload = function(){
 					this.rotationZ_bar = this.selected_parts.rotation.z;
 				},
 				//角度バーが変わった時、描画中のオブジェクトに反映
-				changePartsRotation:functin(e){
+				changePartsRotation:function(e){
+					console.log("changePartsRotation");
+					console.log(this.rotationX_bar);
+					console.log(this.rotationY_bar);
+					console.log(this.rotationZ_bar);
 
+					//human内部に直接関与していないので失敗
+					//this.selected_parts.rotation.x = this.rotationX_bar;
+					//this.selected_parts.rotation.y = this.rotationY_bar;
+					//this.selected_parts.rotation.z = this.rotationZ_bar;
+
+
+
+
+					this.controls.update();
+					this.renderer.render(this.scene, this.camera);
 				},
 				//更新ボタンが押された時、更新内容を作成しDBに反映
 				makeUpdates:function(e){
