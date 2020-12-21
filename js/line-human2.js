@@ -32,42 +32,43 @@ window.onload = function(){
     vm = new Vue({
       el:"#app",
       data:{
-        canvas:       	0,
-				bar:						0,		//時間用シークバーのDOM要素
-				bar_value:			0,
+        canvas:       				0,
+				//時間バーの値を保持
+				bar_value:						0,
 				//選ばれた部位を保持
-				selected_parts:	0,
+				selected_parts_name:	0,
+				selected_parts:				0,
 				//部位が選択された時rotationを保持
-				rotationX_bar:	0,
-				rotationY_bar:	0,
-				rotationZ_bar:	0,
-        scene:        	new THREE.Scene(),
-        renderer:     	new THREE.WebGLRenderer({anitialias: true}),
-        camera:       	new THREE.PerspectiveCamera(45,1,1,10000),
-        controls:     	0,
-        light:        	new THREE.DirectionalLight(0xFFFFFF, 1),
-        human:        	new THREE.Group(),
-				mouse:					new THREE.Vector2(),
-				raycaster: 			new THREE.Raycaster(),
-				intersects:			0,
+				rotationX_bar:				0,
+				rotationY_bar:				0,
+				rotationZ_bar:				0,
+        scene:        				new THREE.Scene(),
+        renderer:     				new THREE.WebGLRenderer({anitialias: true}),
+        camera:       				new THREE.PerspectiveCamera(45,1,1,10000),
+        controls:     				0,
+        light:        				new THREE.DirectionalLight(0xFFFFFF, 1),
+        human:        				new THREE.Group(),
+				mouse:								new THREE.Vector2(),
+				raycaster: 						new THREE.Raycaster(),
+				intersects:						0,
 				//キーフレームトラックを保持(データベースとのデータ共有に使用)
-				keyframetracks:	[],
+				keyframetracks:				[],
         //アニメーションクリップを保持(データベースとのデータ共有に使用)
-        clips:        	[],
+        clips:        				[],
 				//ミキサーを保持(アニメーション実行に使用)
-				mixers:					[],
+				mixers:								[],
         //アニメーションアクションを保持(アニメーション実行に使用)
-        actions:      	[],
+        actions:      				[],
 				//再生時にactionsをリセットする必要があるかのチェックをするフラグ
-				reset_flag:			false,
-        eventstart:   	EVENTNAME_START,
-        eventmove:    	EVENTNAME_MOVE,
-        eventend:     	EVENTNAME_END
+				reset_flag:						false,
+        eventstart:   				EVENTNAME_START,
+        eventmove:    				EVENTNAME_MOVE,
+        eventend:     				EVENTNAME_END
       },
       methods:{
 				//データが変更された時実行する
         changed_DB_bySomeone:function(ss){
-
+					console.log("change DB");
         },
 				//Orbit操作に対して描画を更新するためのメソッド
 				OrbitStart:function(e){
@@ -135,13 +136,9 @@ window.onload = function(){
 					};
 
 				},
-				FrameNumber:function(e){
-					console.log(this.bar.value);
-					this.bar_value = this.bar.value;
-
-				},
+				//フレーム選択時に実行する
 				FrameSelecte:function(e){
-					var time = this.bar.value;
+					var time = this.bar_value;
 				  this.actions[0].time = time;
 					this.actions[1].time = time;
 					this.actions[2].time = time;
@@ -167,83 +164,166 @@ window.onload = function(){
 					this.reset_flag = true;
 				},
 				PartsSelect:function(e){
-
-					var v = document.getElementById('parts').value;
+					this.selected_parts_name = document.getElementById('parts').value;
 
 					//vの値で部位を検索し、角度変更バーの初期位置を調整
 					//検索した部位は[selected_parts]に保持
-					switch(v){
+					switch(this.selected_parts_name){
 						case 'body':
-							console.log(this.human.children[0]);
-							this.selected_parts = this.human.children[0];
+							//console.log(this.human.children[0]);
+							var selected_parts = this.human.children[0];
+
 							break;
 						case 'right_arm_1':
-							console.log(this.human.children[0].children[1]);
-							this.selected_parts = this.human.children[0].children[1];
+							//console.log(this.human.children[0].children[1]);
+							var selected_parts = this.human.children[0].children[1];
+
 							break;
 						case 'right_arm_2':
-							console.log(this.human.children[0].children[1].children[0]);
-							this.selected_parts = this.human.children[0].children[1].children[0];
+							//console.log(this.human.children[0].children[1].children[0]);
+							var selected_parts = this.human.children[0].children[1].children[0];
+
 							break;
 						case 'left_arm_1':
-							console.log(this.human.children[0].children[2]);
-							this.selected_parts = this.human.children[0].children[2];
+							//console.log(this.human.children[0].children[2]);
+							var selected_parts = this.human.children[0].children[2];
+
 							break;
 						case 'left_arm_2':
-							console.log(this.human.children[0].children[2].children[0]);
-							this.selected_parts = this.human.children[0].children[2].children[0];
+							//console.log(this.human.children[0].children[2].children[0]);
+							var selected_parts = this.human.children[0].children[2].children[0];
+
 							break;
 						case 'waist':
-							console.log(this.human.children[1]);
-							this.selected_parts = this.human.children[1];
+							//console.log(this.human.children[1]);
+							var selected_parts = this.human.children[1];
+
 							break;
 						case 'right_foot_1':
-							console.log(this.human.children[1].children[0]);
-							this.selected_parts =  this.human.children[1].children[0];
+							//console.log(this.human.children[1].children[0]);
+							var selected_parts =  this.human.children[1].children[0];
+
 							break;
 						case 'right_foot_2':
-							console.log(this.human.children[1].children[0].children[0]);
-							this.selected_parts = this.human.children[1].children[0].children[0];
+							//console.log(this.human.children[1].children[0].children[0]);
+							var selected_parts = this.human.children[1].children[0].children[0];
+
 							break;
 						case 'left_foot_1':
-							console.log(this.human.children[1].children[1]);
-							this.selected_parts = this.human.children[1].children[1];
+							//console.log(this.human.children[1].children[1]);
+							var selected_parts = this.human.children[1].children[1];
+
 							break;
 						case 'left_foot_2':
-							console.log(this.human.children[1].children[1].children[0]);
-							this.selected_parts = this.human.children[1].children[1].children[0];
+							//console.log(this.human.children[1].children[1].children[0]);
+							var selected_parts = this.human.children[1].children[1].children[0];
+
 							break;
 						default:
 							console.log("Error!");
+							var selected_parts = 0;
 							break;
 
-					}
-
-					this.rotationX_bar = this.selected_parts.rotation.x;
-					this.rotationY_bar = this.selected_parts.rotation.y;
-					this.rotationZ_bar = this.selected_parts.rotation.z;
+					};
+					if(selected_parts != 0){
+						this.rotationX_bar = selected_parts.rotation.x;
+						this.rotationY_bar = selected_parts.rotation.y;
+						this.rotationZ_bar = selected_parts.rotation.z;
+					}else{
+						this.rotationX_bar = 0;
+						this.rotationY_bar = 0;
+						this.rotationZ_bar = 0;
+					};
 				},
 				//角度バーが変わった時、描画中のオブジェクトに反映
 				changePartsRotation:function(e){
-					console.log("changePartsRotation");
-					console.log(this.rotationX_bar);
-					console.log(this.rotationY_bar);
-					console.log(this.rotationZ_bar);
+					//selected_parts_nameの中身によって分岐を作り、
+					//各々でthis.humanに干渉する
+					switch(this.selected_parts_name){
+						case 'body':
+							//console.log(this.human.children[0]);
+							this.human.children[0].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
 
-					//human内部に直接関与していないので失敗
-					//this.selected_parts.rotation.x = this.rotationX_bar;
-					//this.selected_parts.rotation.y = this.rotationY_bar;
-					//this.selected_parts.rotation.z = this.rotationZ_bar;
+							break;
+						case 'right_arm_1':
+							//console.log(this.human.children[0].children[1]);
+							this.human.children[0].children[1].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
 
+							break;
+						case 'right_arm_2':
+							//console.log(this.human.children[0].children[1].children[0]);
+							this.human.children[0].children[1].children[0].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
 
+							break;
+						case 'left_arm_1':
+							//console.log(this.human.children[0].children[2]);
+							this.human.children[0].children[2].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
 
+							break;
+						case 'left_arm_2':
+							//console.log(this.human.children[0].children[2].children[0]);
+							this.human.children[0].children[2].children[0].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
 
+							break;
+						case 'waist':
+							//console.log(this.human.children[1]);
+							this.human.children[1].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
+
+							break;
+						case 'right_foot_1':
+							//console.log(this.human.children[1].children[0]);
+							this.human.children[1].children[0].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
+
+							break;
+						case 'right_foot_2':
+							//console.log(this.human.children[1].children[0].children[0]);
+							this.human.children[1].children[0].children[0].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
+
+							break;
+						case 'left_foot_1':
+							//console.log(this.human.children[1].children[1]);
+							this.human.children[1].children[1].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
+
+							break;
+						case 'left_foot_2':
+							//console.log(this.human.children[1].children[1].children[0]);
+							this.human.children[1].children[1].children[0].rotation.set(
+								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
+							);
+
+							break;
+						default:
+							console.log("Parts isn't selected!");
+							break;
+
+					}
 					this.controls.update();
 					this.renderer.render(this.scene, this.camera);
 				},
 				//更新ボタンが押された時、更新内容を作成しDBに反映
 				makeUpdates:function(e){
 					console.log("makeUpdates");
+
+
+
 				}
 
 
@@ -261,13 +341,6 @@ window.onload = function(){
 				this.controls.target.set(0, 250, 0);
 				this.controls.enableZoom = false;
 				this.controls.enabled = false;
-				//シークバーの設定...html上でできるかも
-				this.bar = document.getElementById('timebar');
-				this.bar.addEventListener('input'
-					,this.FrameNumber);//値変更時(ドラッグ中)のイベント
-				this.bar.addEventListener('change'
-					,this.FrameSelecte);//値変更時(タッチが離れた時)のイベント
-
 
 
         //地面を作成
@@ -757,7 +830,6 @@ window.onload = function(){
 				this.actions[2].setLoop(THREE.LoopOnce);
 				this.actions[3].setLoop(THREE.LoopOnce);
 				this.actions[4].setLoop(THREE.LoopOnce);
-
 				this.actions[0].play();
 				this.actions[1].play();
 				this.actions[2].play();
