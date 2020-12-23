@@ -19,7 +19,7 @@ window.onload = function(){
 	function renewDB(update_set){
 		//update_setは、行われたDOM操作に関して記録したリストとする
 		console.log("DB update");
-		database.ref("").update(update_set);
+		database.ref("/student/AnimationClip").update(update_set);
 		//updatesを初期化
 		updates = {};
 	};
@@ -170,65 +170,55 @@ window.onload = function(){
 					//検索した部位は[selected_parts]に保持
 					switch(this.selected_parts_name){
 						case 'body':
-							//console.log(this.human.children[0]);
-							var selected_parts = this.human.children[0];
+							this.selected_parts = this.human.children[0];
 
 							break;
 						case 'right_arm_1':
-							//console.log(this.human.children[0].children[1]);
-							var selected_parts = this.human.children[0].children[1];
+							this.selected_parts = this.human.children[0].children[1];
 
 							break;
 						case 'right_arm_2':
-							//console.log(this.human.children[0].children[1].children[0]);
-							var selected_parts = this.human.children[0].children[1].children[0];
+							this.selected_parts = this.human.children[0].children[1].children[0];
 
 							break;
 						case 'left_arm_1':
-							//console.log(this.human.children[0].children[2]);
-							var selected_parts = this.human.children[0].children[2];
+							this.selected_parts = this.human.children[0].children[2];
 
 							break;
 						case 'left_arm_2':
-							//console.log(this.human.children[0].children[2].children[0]);
-							var selected_parts = this.human.children[0].children[2].children[0];
+							this.selected_parts = this.human.children[0].children[2].children[0];
 
 							break;
 						case 'waist':
-							//console.log(this.human.children[1]);
-							var selected_parts = this.human.children[1];
+							this.selected_parts = this.human.children[1];
 
 							break;
 						case 'right_foot_1':
-							//console.log(this.human.children[1].children[0]);
-							var selected_parts =  this.human.children[1].children[0];
+							this.selected_parts =  this.human.children[1].children[0];
 
 							break;
 						case 'right_foot_2':
-							//console.log(this.human.children[1].children[0].children[0]);
-							var selected_parts = this.human.children[1].children[0].children[0];
+							this.selected_parts = this.human.children[1].children[0].children[0];
 
 							break;
 						case 'left_foot_1':
-							//console.log(this.human.children[1].children[1]);
-							var selected_parts = this.human.children[1].children[1];
+							this.selected_parts = this.human.children[1].children[1];
 
 							break;
 						case 'left_foot_2':
-							//console.log(this.human.children[1].children[1].children[0]);
-							var selected_parts = this.human.children[1].children[1].children[0];
+							this.selected_parts = this.human.children[1].children[1].children[0];
 
 							break;
 						default:
 							console.log("Error!");
-							var selected_parts = 0;
+							this.selected_parts = 0;
 							break;
 
 					};
-					if(selected_parts != 0){
-						this.rotationX_bar = selected_parts.rotation.x;
-						this.rotationY_bar = selected_parts.rotation.y;
-						this.rotationZ_bar = selected_parts.rotation.z;
+					if(this.selected_parts != 0){
+						this.rotationX_bar = this.selected_parts.rotation.x;
+						this.rotationY_bar = this.selected_parts.rotation.y;
+						this.rotationZ_bar = this.selected_parts.rotation.z;
 					}else{
 						this.rotationX_bar = 0;
 						this.rotationY_bar = 0;
@@ -241,70 +231,60 @@ window.onload = function(){
 					//各々でthis.humanに干渉する
 					switch(this.selected_parts_name){
 						case 'body':
-							//console.log(this.human.children[0]);
 							this.human.children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'right_arm_1':
-							//console.log(this.human.children[0].children[1]);
 							this.human.children[0].children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'right_arm_2':
-							//console.log(this.human.children[0].children[1].children[0]);
 							this.human.children[0].children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'left_arm_1':
-							//console.log(this.human.children[0].children[2]);
 							this.human.children[0].children[2].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'left_arm_2':
-							//console.log(this.human.children[0].children[2].children[0]);
 							this.human.children[0].children[2].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'waist':
-							//console.log(this.human.children[1]);
 							this.human.children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'right_foot_1':
-							//console.log(this.human.children[1].children[0]);
 							this.human.children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'right_foot_2':
-							//console.log(this.human.children[1].children[0].children[0]);
 							this.human.children[1].children[0].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'left_foot_1':
-							//console.log(this.human.children[1].children[1]);
 							this.human.children[1].children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 
 							break;
 						case 'left_foot_2':
-							//console.log(this.human.children[1].children[1].children[0]);
 							this.human.children[1].children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
@@ -323,9 +303,166 @@ window.onload = function(){
 					console.log("makeUpdates");
 
 
+					//角度バーに変更があるかチェックし、あれば処理続行.なければ中止.
 
+
+
+					//swicthを用いて、keyframetracksの中から指定部位のキーフレームトラック
+					//の3軸のインデックスナンバーを持ってくる
+					switch(this.selected_parts_name){
+						case 'body':
+							var keyframetrack_indexX = 0;
+							var keyframetrack_indexY = 1;
+							var keyframetrack_indexZ = 2;
+							break;
+						case 'right_arm_1':
+							var keyframetrack_indexX = 3;
+							var keyframetrack_indexY = 4;
+							var keyframetrack_indexZ = 5;
+							break;
+						case 'right_arm_2':
+							var keyframetrack_indexX = 6;
+							var keyframetrack_indexY = 7;
+							var keyframetrack_indexZ = 8;
+							break;
+						case 'left_arm_1':
+							var keyframetrack_indexX = 9;
+							var keyframetrack_indexY = 10;
+							var keyframetrack_indexZ = 11;
+							break;
+						case 'left_arm_2':
+							var keyframetrack_indexX = 12;
+							var keyframetrack_indexY = 13;
+							var keyframetrack_indexZ = 14;
+							break;
+						case 'waist':
+							var keyframetrack_indexX = 15;
+							var keyframetrack_indexY = 16;
+							var keyframetrack_indexZ = 17;
+							break;
+						case 'right_foot_1':
+							var keyframetrack_indexX = 18;
+							var keyframetrack_indexY = 19;
+							var keyframetrack_indexZ = 20;
+							break;
+						case 'right_foot_2':
+							var keyframetrack_indexX = 21;
+							var keyframetrack_indexY = 22;
+							var keyframetrack_indexZ = 23;
+							break;
+						case 'left_foot_1':
+							var keyframetrack_indexX = 24;
+							var keyframetrack_indexY = 25;
+							var keyframetrack_indexZ = 26;
+							break;
+						case 'left_foot_2':
+							var keyframetrack_indexX = 27;
+							var keyframetrack_indexY = 28;
+							var keyframetrack_indexZ = 29;
+							break;
+						default:
+							console.log("Error makeUpdates");
+							break;
+					};
+
+					//console.log(this.keyframetracks[keyframetrack_indexX].times);
+					//console.log(this.keyframetracks[keyframetrack_indexY].times);
+					//console.log(this.keyframetracks[keyframetrack_indexZ].times);
+					//console.log(this.keyframetracks[keyframetrack_indexX].times.length);
+					//console.log(this.keyframetracks[keyframetrack_indexY].times.length);
+					//console.log(this.keyframetracks[keyframetrack_indexZ].times.length);
+
+
+					//x軸の変更をDBに反映するupdates作成
+					for(var i=0; i<this.keyframetracks[keyframetrack_indexX].times.length; i++){
+						if(this.bar_value == this.keyframetracks[keyframetrack_indexX].times[i]){
+							//index番号が変数iと等しいvaluesをrotationX_barの値で更新
+							this.keyframetracks[keyframetrack_indexX].values[i] = this.rotationX_bar;
+
+							updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
+
+							break;
+						}else if(this.bar_value < this.keyframetracks[keyframetrack_indexX].times[i]){
+							//index番号が変数iの位置のtimes,valuesそれぞれにbar_value,rotationX_barの値を追加
+							//それ以後のindex番号を一つずつずらす
+							this.keyframetracks[keyframetrack_indexX].times.splice(i,0,this.bar_value);
+							this.keyframetracks[keyframetrack_indexX].values.splice(i,0,this.rotationX_bar);
+
+							updates[this.selected_parts_name+"/x/times"] = this.keyframetracks[keyframetrack_indexX].times;
+							updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
+
+							break;
+						}else if(i == this.keyframetracks[keyframetrack_indexX].times.length - 1){
+							//最後尾にtimes,valuesそれぞれbar_value,rotationX_barの値を追加
+							this.keyframetracks[keyframetrack_indexX].times.push(this.bar_value);
+							this.keyframetracks[keyframetrack_indexX].values.push(this.rotationX_bar);
+
+							updates[this.selected_parts_name+"/x/times"] = this.keyframetracks[keyframetrack_indexX].times;
+							updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
+
+							break;
+						};
+					};
+
+					//y軸の変更をDBに反映するupdates作成
+					for(var i=0; i<this.keyframetracks[keyframetrack_indexY].times.length; i++){
+						if(this.bar_value == this.keyframetracks[keyframetrack_indexY].times[i]){
+							//index番号が変数iと等しいvaluesをrotationY_barの値で更新
+							this.keyframetracks[keyframetrack_indexY].values[i] = this.rotationY_bar;
+
+							updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
+
+							break;
+						}else if(this.bar_value < this.keyframetracks[keyframetrack_indexY].times[i]){
+							this.keyframetracks[keyframetrack_indexY].times.splice(i,0,this.bar_value);
+							this.keyframetracks[keyframetrack_indexY].values.splice(i,0,this.rotationY_bar);
+
+							updates[this.selected_parts_name+"/y/times"] = this.keyframetracks[keyframetrack_indexY].times;
+							updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
+
+							break;
+						}else if(i == this.keyframetracks[keyframetrack_indexY].times.length - 1){
+							this.keyframetracks[keyframetrack_indexY].times.push(this.bar_value);
+							this.keyframetracks[keyframetrack_indexY].values.push(this.rotationY_bar);
+
+							updates[this.selected_parts_name+"/y/times"] = this.keyframetracks[keyframetrack_indexY].times;
+							updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
+
+							break;
+						};
+					};
+
+					//z軸の変更をDBに反映するupdates作成
+					for(var i=0; i<this.keyframetracks[keyframetrack_indexZ].times.length; i++){
+						if(this.bar_value == this.keyframetracks[keyframetrack_indexZ].times[i]){
+							//index番号が変数iと等しいvaluesをrotationZ_barの値で更新
+							this.keyframetracks[keyframetrack_indexZ].values[i] = this.rotationZ_bar;
+
+							updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
+
+							break;
+						}else if(this.bar_value < this.keyframetracks[keyframetrack_indexZ].times[i]){
+							this.keyframetracks[keyframetrack_indexZ].times.splice(i,0,this.bar_value);
+							this.keyframetracks[keyframetrack_indexZ].values.splice(i,0,this.rotationZ_bar);
+
+							updates[this.selected_parts_name+"/z/times"] = this.keyframetracks[keyframetrack_indexZ].times;
+							updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
+
+							break;
+						}else if(i == this.keyframetracks[keyframetrack_indexZ].times.length - 1){
+							this.keyframetracks[keyframetrack_indexZ].times.push(this.bar_value);
+							this.keyframetracks[keyframetrack_indexZ].values.push(this.rotationZ_bar);
+
+							updates[this.selected_parts_name+"/z/times"] = this.keyframetracks[keyframetrack_indexZ].times;
+							updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
+
+							break;
+						};
+					};
+
+					console.log(updates);
+					//renewDB(updates);
 				}
-
 
       },
       mounted(){
