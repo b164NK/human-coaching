@@ -30,7 +30,7 @@
         <button v-on:click="animate">再生</button>
         <p>フレーム数:<input type="range" min="0" max="4" step="0.01"
           v-model.number="bar_value"
-          v-on:change="FrameSelecte">{{bar_value}}</p>
+          v-on:change="FrameSelect">{{bar_value}}</p>
         <p>部位:<select id="parts"　v-on:change="PartsSelect">
                   <option value="no name">      部位を選択</option>
                   <option value="body">         上半身</option>
@@ -45,13 +45,13 @@
                   <option value="left_foot_2">  左下腿</option>
                   </select></p>
         <p>角度:</p>
-        <p>x<input type="range" min="0" max="6.28" step="0.01"
+        <p>x<input type="range" min="-1.57" max="1.57" step="0.01"
           v-model.number="rotationX_bar"
           v-on:input="changePartsRotation">{{rotationX_bar}}</p>
-        <p>y<input type="range" min="0" max="6.28" step="0.01"
+        <p>y<input type="range" min="-1.57" max="1.57" step="0.01"
           v-model.number="rotationY_bar"
           v-on:input="changePartsRotation">{{rotationY_bar}}</p>
-        <p>z<input type="range" min="0" max="6.28" step="0.01"
+        <p>z<input type="range" min="-1.57" max="1.57" step="0.01"
           v-model.number="rotationZ_bar"
           v-on:input="changePartsRotation">{{rotationZ_bar}}</p>
         <p><button v-on:click="makeUpdates">更新</button></p>

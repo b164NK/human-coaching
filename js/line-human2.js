@@ -18,10 +18,12 @@ window.onload = function(){
 
 	function renewDB(update_set){
 		//update_setは、行われたDOM操作に関して記録したリストとする
-		console.log("DB update");
-		database.ref("/student/AnimationClip").update(update_set);
-		//updatesを初期化
-		updates = {};
+		if(update_set != {}){
+			console.log("DB update");
+			database.ref("/student/AnimationClip").update(update_set);
+			//updatesを初期化
+			updates = {};
+		};
 	};
 
 	//Vueインスタンスをいれる変数
@@ -38,7 +40,11 @@ window.onload = function(){
 				//選ばれた部位を保持
 				selected_parts_name:	0,
 				selected_parts:				0,
-				//部位が選択された時rotationを保持
+				//角度バーに反映された直後の値を保持
+				selected_parts_rotX:	0,
+				selected_parts_rotY:	0,
+				selected_parts_rotZ:	0,
+				//部位が選択された時のrotationを角度バーに反映
 				rotationX_bar:				0,
 				rotationY_bar:				0,
 				rotationZ_bar:				0,
@@ -69,6 +75,11 @@ window.onload = function(){
 				//データが変更された時実行する
         changed_DB_bySomeone:function(ss){
 					console.log("change DB");
+
+
+
+
+
         },
 				//Orbit操作に対して描画を更新するためのメソッド
 				OrbitStart:function(e){
@@ -95,7 +106,7 @@ window.onload = function(){
 						this.actions[3].reset();
 						this.actions[4].reset();
 						this.reset_flag = false;
-					}
+					};
 
 					console.log("再生中");
 
@@ -137,7 +148,7 @@ window.onload = function(){
 
 				},
 				//フレーム選択時に実行する
-				FrameSelecte:function(e){
+				FrameSelect:function(e){
 					var time = this.bar_value;
 				  this.actions[0].time = time;
 					this.actions[1].time = time;
@@ -162,6 +173,22 @@ window.onload = function(){
 					this.renderer.render(this.scene, this.camera);
 					//console.log("from FrameSelecte");
 					this.reset_flag = true;
+
+					//部位がすでに選ばれていれば、角度バーを更新
+					if(this.selected_parts != 0){
+						this.rotationX_bar = this.selected_parts.rotation.x;
+						this.rotationY_bar = this.selected_parts.rotation.y;
+						this.rotationZ_bar = this.selected_parts.rotation.z;
+						//角度バーに反映された直後の値を保持
+						this.selected_parts_rotX = this.selected_parts.rotation.x;
+						this.selected_parts_rotY = this.selected_parts.rotation.y;
+						this.selected_parts_rotZ = this.selected_parts.rotation.z;
+					}else{
+						this.rotationX_bar = 0;
+						this.rotationY_bar = 0;
+						this.rotationZ_bar = 0;
+					};
+
 				},
 				PartsSelect:function(e){
 					this.selected_parts_name = document.getElementById('parts').value;
@@ -171,54 +198,49 @@ window.onload = function(){
 					switch(this.selected_parts_name){
 						case 'body':
 							this.selected_parts = this.human.children[0];
-
 							break;
 						case 'right_arm_1':
 							this.selected_parts = this.human.children[0].children[1];
-
 							break;
 						case 'right_arm_2':
 							this.selected_parts = this.human.children[0].children[1].children[0];
-
 							break;
 						case 'left_arm_1':
 							this.selected_parts = this.human.children[0].children[2];
-
 							break;
 						case 'left_arm_2':
 							this.selected_parts = this.human.children[0].children[2].children[0];
-
 							break;
 						case 'waist':
 							this.selected_parts = this.human.children[1];
-
 							break;
 						case 'right_foot_1':
 							this.selected_parts =  this.human.children[1].children[0];
-
 							break;
 						case 'right_foot_2':
 							this.selected_parts = this.human.children[1].children[0].children[0];
-
 							break;
 						case 'left_foot_1':
 							this.selected_parts = this.human.children[1].children[1];
-
 							break;
 						case 'left_foot_2':
 							this.selected_parts = this.human.children[1].children[1].children[0];
-
 							break;
 						default:
 							console.log("Error!");
 							this.selected_parts = 0;
 							break;
-
 					};
+
 					if(this.selected_parts != 0){
+						//選ばれた部位の形をバーに反映
 						this.rotationX_bar = this.selected_parts.rotation.x;
 						this.rotationY_bar = this.selected_parts.rotation.y;
 						this.rotationZ_bar = this.selected_parts.rotation.z;
+						//角度バーに反映された直後の値を保持
+						this.selected_parts_rotX = this.selected_parts.rotation.x;
+						this.selected_parts_rotY = this.selected_parts.rotation.y;
+						this.selected_parts_rotZ = this.selected_parts.rotation.z;
 					}else{
 						this.rotationX_bar = 0;
 						this.rotationY_bar = 0;
@@ -234,79 +256,63 @@ window.onload = function(){
 							this.human.children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'right_arm_1':
 							this.human.children[0].children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'right_arm_2':
 							this.human.children[0].children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'left_arm_1':
 							this.human.children[0].children[2].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'left_arm_2':
 							this.human.children[0].children[2].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'waist':
 							this.human.children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'right_foot_1':
 							this.human.children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'right_foot_2':
 							this.human.children[1].children[0].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'left_foot_1':
 							this.human.children[1].children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						case 'left_foot_2':
 							this.human.children[1].children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
-
 							break;
 						default:
 							console.log("Parts isn't selected!");
 							break;
+					};
 
-					}
 					this.controls.update();
 					this.renderer.render(this.scene, this.camera);
 				},
 				//更新ボタンが押された時、更新内容を作成しDBに反映
 				makeUpdates:function(e){
 					console.log("makeUpdates");
-
-
-					//角度バーに変更があるかチェックし、あれば処理続行.なければ中止.
-
-
-
 					//swicthを用いて、keyframetracksの中から指定部位のキーフレームトラック
 					//の3軸のインデックスナンバーを持ってくる
 					switch(this.selected_parts_name){
@@ -365,103 +371,84 @@ window.onload = function(){
 							break;
 					};
 
-					//console.log(this.keyframetracks[keyframetrack_indexX].times);
-					//console.log(this.keyframetracks[keyframetrack_indexY].times);
-					//console.log(this.keyframetracks[keyframetrack_indexZ].times);
-					//console.log(this.keyframetracks[keyframetrack_indexX].times.length);
-					//console.log(this.keyframetracks[keyframetrack_indexY].times.length);
-					//console.log(this.keyframetracks[keyframetrack_indexZ].times.length);
-
-
 					//x軸の変更をDBに反映するupdates作成
-					for(var i=0; i<this.keyframetracks[keyframetrack_indexX].times.length; i++){
-						if(this.bar_value == this.keyframetracks[keyframetrack_indexX].times[i]){
-							//index番号が変数iと等しいvaluesをrotationX_barの値で更新
-							this.keyframetracks[keyframetrack_indexX].values[i] = this.rotationX_bar;
-
-							updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
-
-							break;
-						}else if(this.bar_value < this.keyframetracks[keyframetrack_indexX].times[i]){
-							//index番号が変数iの位置のtimes,valuesそれぞれにbar_value,rotationX_barの値を追加
-							//それ以後のindex番号を一つずつずらす
-							this.keyframetracks[keyframetrack_indexX].times.splice(i,0,this.bar_value);
-							this.keyframetracks[keyframetrack_indexX].values.splice(i,0,this.rotationX_bar);
-
-							updates[this.selected_parts_name+"/x/times"] = this.keyframetracks[keyframetrack_indexX].times;
-							updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
-
-							break;
-						}else if(i == this.keyframetracks[keyframetrack_indexX].times.length - 1){
-							//最後尾にtimes,valuesそれぞれbar_value,rotationX_barの値を追加
-							this.keyframetracks[keyframetrack_indexX].times.push(this.bar_value);
-							this.keyframetracks[keyframetrack_indexX].values.push(this.rotationX_bar);
-
-							updates[this.selected_parts_name+"/x/times"] = this.keyframetracks[keyframetrack_indexX].times;
-							updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
-
-							break;
+					if(this.rotationX_bar != this.selected_parts_rotX){
+						for(var i=0; i<this.keyframetracks[keyframetrack_indexX].times.length; i++){
+							if(this.bar_value == this.keyframetracks[keyframetrack_indexX].times[i]){
+								//index番号が変数iと等しいvaluesをrotationX_barの値で更新
+								this.keyframetracks[keyframetrack_indexX].values[i] = this.rotationX_bar;
+								updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
+								break;
+							}else if(this.bar_value < this.keyframetracks[keyframetrack_indexX].times[i]){
+								//index番号が変数iの位置のtimes,valuesそれぞれにbar_value,rotationX_barの値を追加
+								//それ以後のindex番号を一つずつずらす
+								this.keyframetracks[keyframetrack_indexX].times.splice(i,0,this.bar_value);
+								this.keyframetracks[keyframetrack_indexX].values.splice(i,0,this.rotationX_bar);
+								updates[this.selected_parts_name+"/x/times"] = this.keyframetracks[keyframetrack_indexX].times;
+								updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
+								break;
+							}else if(i == this.keyframetracks[keyframetrack_indexX].times.length - 1){
+								//最後尾にtimes,valuesそれぞれbar_value,rotationX_barの値を追加
+								this.keyframetracks[keyframetrack_indexX].times.push(this.bar_value);
+								this.keyframetracks[keyframetrack_indexX].values.push(this.rotationX_bar);
+								updates[this.selected_parts_name+"/x/times"] = this.keyframetracks[keyframetrack_indexX].times;
+								updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
+								break;
+							};
 						};
 					};
 
 					//y軸の変更をDBに反映するupdates作成
-					for(var i=0; i<this.keyframetracks[keyframetrack_indexY].times.length; i++){
-						if(this.bar_value == this.keyframetracks[keyframetrack_indexY].times[i]){
-							//index番号が変数iと等しいvaluesをrotationY_barの値で更新
-							this.keyframetracks[keyframetrack_indexY].values[i] = this.rotationY_bar;
-
-							updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
-
-							break;
-						}else if(this.bar_value < this.keyframetracks[keyframetrack_indexY].times[i]){
-							this.keyframetracks[keyframetrack_indexY].times.splice(i,0,this.bar_value);
-							this.keyframetracks[keyframetrack_indexY].values.splice(i,0,this.rotationY_bar);
-
-							updates[this.selected_parts_name+"/y/times"] = this.keyframetracks[keyframetrack_indexY].times;
-							updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
-
-							break;
-						}else if(i == this.keyframetracks[keyframetrack_indexY].times.length - 1){
-							this.keyframetracks[keyframetrack_indexY].times.push(this.bar_value);
-							this.keyframetracks[keyframetrack_indexY].values.push(this.rotationY_bar);
-
-							updates[this.selected_parts_name+"/y/times"] = this.keyframetracks[keyframetrack_indexY].times;
-							updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
-
-							break;
+					if(this.rotationY_bar != this.selected_parts_rotY){
+						for(var i=0; i<this.keyframetracks[keyframetrack_indexY].times.length; i++){
+							if(this.bar_value == this.keyframetracks[keyframetrack_indexY].times[i]){
+								//index番号が変数iと等しいvaluesをrotationY_barの値で更新
+								this.keyframetracks[keyframetrack_indexY].values[i] = this.rotationY_bar;
+								updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
+								break;
+							}else if(this.bar_value < this.keyframetracks[keyframetrack_indexY].times[i]){
+								this.keyframetracks[keyframetrack_indexY].times.splice(i,0,this.bar_value);
+								this.keyframetracks[keyframetrack_indexY].values.splice(i,0,this.rotationY_bar);
+								updates[this.selected_parts_name+"/y/times"] = this.keyframetracks[keyframetrack_indexY].times;
+								updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
+								break;
+							}else if(i == this.keyframetracks[keyframetrack_indexY].times.length - 1){
+								this.keyframetracks[keyframetrack_indexY].times.push(this.bar_value);
+								this.keyframetracks[keyframetrack_indexY].values.push(this.rotationY_bar);
+								updates[this.selected_parts_name+"/y/times"] = this.keyframetracks[keyframetrack_indexY].times;
+								updates[this.selected_parts_name+"/y/values"] = this.keyframetracks[keyframetrack_indexY].values;
+								break;
+							};
 						};
 					};
 
 					//z軸の変更をDBに反映するupdates作成
-					for(var i=0; i<this.keyframetracks[keyframetrack_indexZ].times.length; i++){
-						if(this.bar_value == this.keyframetracks[keyframetrack_indexZ].times[i]){
-							//index番号が変数iと等しいvaluesをrotationZ_barの値で更新
-							this.keyframetracks[keyframetrack_indexZ].values[i] = this.rotationZ_bar;
-
-							updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
-
-							break;
-						}else if(this.bar_value < this.keyframetracks[keyframetrack_indexZ].times[i]){
-							this.keyframetracks[keyframetrack_indexZ].times.splice(i,0,this.bar_value);
-							this.keyframetracks[keyframetrack_indexZ].values.splice(i,0,this.rotationZ_bar);
-
-							updates[this.selected_parts_name+"/z/times"] = this.keyframetracks[keyframetrack_indexZ].times;
-							updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
-
-							break;
-						}else if(i == this.keyframetracks[keyframetrack_indexZ].times.length - 1){
-							this.keyframetracks[keyframetrack_indexZ].times.push(this.bar_value);
-							this.keyframetracks[keyframetrack_indexZ].values.push(this.rotationZ_bar);
-
-							updates[this.selected_parts_name+"/z/times"] = this.keyframetracks[keyframetrack_indexZ].times;
-							updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
-
-							break;
+					if(this.rotationZ_bar != this.selected_parts_rotZ){
+						for(var i=0; i<this.keyframetracks[keyframetrack_indexZ].times.length; i++){
+							if(this.bar_value == this.keyframetracks[keyframetrack_indexZ].times[i]){
+								//index番号が変数iと等しいvaluesをrotationZ_barの値で更新
+								this.keyframetracks[keyframetrack_indexZ].values[i] = this.rotationZ_bar;
+								updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
+								break;
+							}else if(this.bar_value < this.keyframetracks[keyframetrack_indexZ].times[i]){
+								this.keyframetracks[keyframetrack_indexZ].times.splice(i,0,this.bar_value);
+								this.keyframetracks[keyframetrack_indexZ].values.splice(i,0,this.rotationZ_bar);
+								updates[this.selected_parts_name+"/z/times"] = this.keyframetracks[keyframetrack_indexZ].times;
+								updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
+								break;
+							}else if(i == this.keyframetracks[keyframetrack_indexZ].times.length - 1){
+								this.keyframetracks[keyframetrack_indexZ].times.push(this.bar_value);
+								this.keyframetracks[keyframetrack_indexZ].values.push(this.rotationZ_bar);
+								updates[this.selected_parts_name+"/z/times"] = this.keyframetracks[keyframetrack_indexZ].times;
+								updates[this.selected_parts_name+"/z/values"] = this.keyframetracks[keyframetrack_indexZ].values;
+								break;
+							};
 						};
 					};
 
 					console.log(updates);
-					//renewDB(updates);
+					console.log("アニメーションを上記の内容で変更");
+					renewDB(updates);
 				}
 
       },
@@ -983,8 +970,6 @@ window.onload = function(){
 				this.controls.enabled = true;
 				this.canvas.addEventListener(this.eventstart,
 					this.OrbitStart,{passive:false});
-
-				//this.animate();
 
       }
     });
