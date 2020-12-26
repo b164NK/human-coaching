@@ -53,7 +53,10 @@ window.onload = function(){
         camera:       				new THREE.PerspectiveCamera(45,1,1,10000),
         controls:     				0,
         light:        				new THREE.DirectionalLight(0xFFFFFF, 1),
+				//再生用のhuman(その他の部位も)
         human:        				new THREE.Group(),
+				//編集用のhuman
+				human_clone:					0,
 				mouse:								new THREE.Vector2(),
 				raycaster: 						new THREE.Raycaster(),
 				intersects:						0,
@@ -76,9 +79,206 @@ window.onload = function(){
         changed_DB_bySomeone:function(ss){
 					console.log("change DB");
 
+					//humanに対するアニメーションを停止
+					this.actions[0].stop();
+					this.actions[1].stop();
+					this.actions[2].stop();
+					this.actions[3].stop();
+					this.actions[4].stop();
+
+					//更新されたデータ(ss.child().val)をkeyframetracksに反映させる
+					//clips,mixers,actionsも作り直す
+					this.keyframetracks[0].times = ss.child('AnimationClip/body/x/times').val();
+					this.keyframetracks[0].values = ss.child('AnimationClip/body/x/values').val();
+					this.keyframetracks[1].times = ss.child('AnimationClip/body/y/times').val();
+					this.keyframetracks[1].values = ss.child('AnimationClip/body/y/values').val();
+					this.keyframetracks[2].times = ss.child('AnimationClip/body/z/times').val();
+					this.keyframetracks[2].values = ss.child('AnimationClip/body/z/values').val();
+
+					this.keyframetracks[3].times = ss.child('AnimationClip/right_arm_1/x/times').val();
+					this.keyframetracks[3].values = ss.child('AnimationClip/right_arm_1/x/values').val();
+					this.keyframetracks[4].times = ss.child('AnimationClip/right_arm_1/y/times').val();
+					this.keyframetracks[4].values = ss.child('AnimationClip/right_arm_1/y/values').val();
+					this.keyframetracks[5].times = ss.child('AnimationClip/right_arm_1/z/times').val();
+					this.keyframetracks[5].values = ss.child('AnimationClip/right_arm_1/z/values').val();
+
+					this.keyframetracks[6].times = ss.child('AnimationClip/right_arm_2/x/times').val();
+					this.keyframetracks[6].values = ss.child('AnimationClip/right_arm_2/x/values').val();
+					this.keyframetracks[7].times = ss.child('AnimationClip/right_arm_2/y/times').val();
+					this.keyframetracks[7].values = ss.child('AnimationClip/right_arm_2/y/values').val();
+					this.keyframetracks[8].times = ss.child('AnimationClip/right_arm_2/z/times').val();
+					this.keyframetracks[8].values = ss.child('AnimationClip/right_arm_2/z/values').val();
+
+					this.keyframetracks[9].times = ss.child('AnimationClip/left_arm_1/x/times').val();
+					this.keyframetracks[9].values = ss.child('AnimationClip/left_arm_1/x/values').val();
+					this.keyframetracks[10].times = ss.child('AnimationClip/left_arm_1/y/times').val();
+					this.keyframetracks[10].values = ss.child('AnimationClip/left_arm_1/y/values').val();
+					this.keyframetracks[11].times = ss.child('AnimationClip/left_arm_1/z/times').val();
+					this.keyframetracks[11].values = ss.child('AnimationClip/left_arm_1/z/values').val();
+
+					this.keyframetracks[12].times = ss.child('AnimationClip/left_arm_2/x/times').val();
+					this.keyframetracks[12].values = ss.child('AnimationClip/left_arm_2/x/values').val();
+					this.keyframetracks[13].times = ss.child('AnimationClip/left_arm_2/y/times').val();
+					this.keyframetracks[13].values = ss.child('AnimationClip/left_arm_2/y/values').val();
+					this.keyframetracks[14].times = ss.child('AnimationClip/left_arm_2/z/times').val();
+					this.keyframetracks[14].values = ss.child('AnimationClip/left_arm_2/z/values').val();
+
+					this.keyframetracks[15].times = ss.child('AnimationClip/waist/x/times').val();
+					this.keyframetracks[15].values = ss.child('AnimationClip/waist/x/values').val();
+					this.keyframetracks[16].times = ss.child('AnimationClip/waist/y/times').val();
+					this.keyframetracks[16].values = ss.child('AnimationClip/waist/y/values').val();
+					this.keyframetracks[17].times = ss.child('AnimationClip/waist/z/times').val();
+					this.keyframetracks[17].values = ss.child('AnimationClip/waist/z/values').val();
+
+					this.keyframetracks[18].times = ss.child('AnimationClip/right_foot_1/x/times').val();
+					this.keyframetracks[18].values = ss.child('AnimationClip/right_foot_1/x/values').val();
+					this.keyframetracks[19].times = ss.child('AnimationClip/right_foot_1/y/times').val();
+					this.keyframetracks[19].values = ss.child('AnimationClip/right_foot_1/y/values').val();
+					this.keyframetracks[20].times = ss.child('AnimationClip/right_foot_1/z/times').val();
+					this.keyframetracks[20].values = ss.child('AnimationClip/right_foot_1/z/values').val();
+
+					this.keyframetracks[21].times = ss.child('AnimationClip/right_foot_2/x/times').val();
+					this.keyframetracks[21].values = ss.child('AnimationClip/right_foot_2/x/values').val();
+					this.keyframetracks[22].times = ss.child('AnimationClip/right_foot_2/y/times').val();
+					this.keyframetracks[22].values = ss.child('AnimationClip/right_foot_2/y/values').val();
+					this.keyframetracks[23].times = ss.child('AnimationClip/right_foot_2/z/times').val();
+					this.keyframetracks[23].values = ss.child('AnimationClip/right_foot_2/z/values').val();
+
+					this.keyframetracks[24].times = ss.child('AnimationClip/left_foot_1/x/times').val();
+					this.keyframetracks[24].values = ss.child('AnimationClip/left_foot_1/x/values').val();
+					this.keyframetracks[25].times = ss.child('AnimationClip/left_foot_1/y/times').val();
+					this.keyframetracks[25].values = ss.child('AnimationClip/left_foot_1/y/values').val();
+					this.keyframetracks[26].times = ss.child('AnimationClip/left_foot_1/z/times').val();
+					this.keyframetracks[26].values = ss.child('AnimationClip/left_foot_1/z/values').val();
+
+					this.keyframetracks[27].times = ss.child('AnimationClip/left_foot_2/x/times').val();
+					this.keyframetracks[27].values = ss.child('AnimationClip/left_foot_2/x/values').val();
+					this.keyframetracks[28].times = ss.child('AnimationClip/left_foot_2/y/times').val();
+					this.keyframetracks[28].values = ss.child('AnimationClip/left_foot_2/y/values').val();
+					this.keyframetracks[29].times = ss.child('AnimationClip/left_foot_2/z/times').val();
+					this.keyframetracks[29].values = ss.child('AnimationClip/left_foot_2/z/values').val();
 
 
+					//clips,mixers,actionsを作り直す
+					this.clips = [];
+					this.mixers = [];
+					this.actions = [];
 
+					//clipJSONをkeyframetracksから作成
+					var clipJSON_Human = {
+					  duration: -1,
+					  name:"human_animation",
+					  tracks: [
+					    this.keyframetracks[0],
+					    this.keyframetracks[1],
+					    this.keyframetracks[2],
+
+					    this.keyframetracks[15],
+					    this.keyframetracks[16],
+					    this.keyframetracks[17]
+					  ]
+					};
+					var clipJSON_RightArm = {
+					  duration: -1,
+					  name:"right_arm_animation",
+					  tracks: [
+					    this.keyframetracks[3],
+					    this.keyframetracks[4],
+					    this.keyframetracks[5],
+
+					    this.keyframetracks[6],
+					    this.keyframetracks[7],
+					    this.keyframetracks[8]
+					  ]
+					};
+					var clipJSON_LeftArm = {
+					  duration: -1,
+					  name:"left_arm_animation",
+					  tracks: [
+					    this.keyframetracks[9],
+					    this.keyframetracks[10],
+					    this.keyframetracks[11],
+
+					    this.keyframetracks[12],
+					    this.keyframetracks[13],
+					    this.keyframetracks[14]
+					  ]
+					};
+					var clipJSON_RightFoot = {
+					  duration: -1,
+					  name:"right_foot_animation",
+					  tracks: [
+					    this.keyframetracks[18],
+					    this.keyframetracks[19],
+					    this.keyframetracks[20],
+
+					    this.keyframetracks[21],
+					    this.keyframetracks[22],
+					    this.keyframetracks[23]
+					  ]
+					};
+					var clipJSON_LeftFoot = {
+					  duration: -1,
+					  name:"left_foot_animation",
+					  tracks: [
+					    this.keyframetracks[24],
+					    this.keyframetracks[25],
+					    this.keyframetracks[26],
+
+					    this.keyframetracks[27],
+					    this.keyframetracks[28],
+					    this.keyframetracks[29]
+					  ]
+					};
+
+
+					var clip_Human = THREE.AnimationClip.parse(clipJSON_Human);
+					var clip_RightArm = THREE.AnimationClip.parse(clipJSON_RightArm);
+					var clip_LeftArm = THREE.AnimationClip.parse(clipJSON_LeftArm);
+					var clip_RightFoot = THREE.AnimationClip.parse(clipJSON_RightFoot);
+					var clip_LeftFoot = THREE.AnimationClip.parse(clipJSON_LeftFoot);
+					this.clips.push(clip_Human);
+					this.clips.push(clip_RightArm);
+					this.clips.push(clip_LeftArm);
+					this.clips.push(clip_RightFoot);
+					this.clips.push(clip_LeftFoot);
+
+					var human_mixer = new THREE.AnimationMixer(this.human);
+					var right_arm_mixer = new THREE.AnimationMixer(this.human.children[0].children[1]);
+					var left_arm_mixer = new THREE.AnimationMixer(this.human.children[0].children[2]);
+					var right_foot_mixer = new THREE.AnimationMixer(this.human.children[1].children[0]);
+					var left_foot_mixer = new THREE.AnimationMixer(this.human.children[1].children[1]);
+					this.mixers.push(human_mixer);
+					this.mixers.push(right_arm_mixer);
+					this.mixers.push(left_arm_mixer);
+					this.mixers.push(right_foot_mixer);
+					this.mixers.push(left_foot_mixer);
+
+					var human_action = this.mixers[0].clipAction(this.clips[0]);
+					var right_arm_action = this.mixers[1].clipAction(this.clips[1]);
+					var left_arm_action = this.mixers[2].clipAction(this.clips[2]);
+					var right_foot_action = this.mixers[3].clipAction(this.clips[3]);
+					var left_foot_action = this.mixers[4].clipAction(this.clips[4]);
+					this.actions.push(human_action);
+					this.actions.push(right_arm_action);
+					this.actions.push(left_arm_action);
+					this.actions.push(right_foot_action);
+					this.actions.push(left_foot_action);
+					//ループ設定(１回のみ)
+					this.actions[0].setLoop(THREE.LoopOnce);
+					this.actions[1].setLoop(THREE.LoopOnce);
+					this.actions[2].setLoop(THREE.LoopOnce);
+					this.actions[3].setLoop(THREE.LoopOnce);
+					this.actions[4].setLoop(THREE.LoopOnce);
+					this.actions[0].play();
+					this.actions[1].play();
+					this.actions[2].play();
+					this.actions[3].play();
+					this.actions[4].play();
+
+					//フレーム数が指定されていたら...
+
+					//部位が選択されていたら...
 
         },
 				//Orbit操作に対して描画を更新するためのメソッド
@@ -108,7 +308,11 @@ window.onload = function(){
 						this.reset_flag = false;
 					};
 
+
 					console.log("再生中");
+					this.scene.remove(this.human_clone);
+					this.scene.add(this.human);
+
 
 					this.mixers[0].update(0.01);
 					this.mixers[1].update(0.01);
@@ -135,6 +339,8 @@ window.onload = function(){
 										this.actions[3].reset();
 										this.actions[4].reset();
 
+										this.scene.remove(this.human);
+										this.scene.add(this.human_clone);
 
 										throw new Error('終了します');
 								};
@@ -169,6 +375,60 @@ window.onload = function(){
 					this.mixers[4].update(0);
 
 
+					//actions,mixersによって算出されたrotationを
+					//human_cloneに適用する.
+					this.human_clone.children[0].rotation.set(
+						this.human.children[0].rotation.x,
+						this.human.children[0].rotation.y,
+						this.human.children[0].rotation.z
+					);
+					this.human_clone.children[0].children[1].rotation.set(
+						this.human.children[0].children[1].rotation.x,
+						this.human.children[0].children[1].rotation.y,
+						this.human.children[0].children[1].rotation.z
+					);
+					this.human_clone.children[0].children[1].children[0].rotation.set(
+						this.human.children[0].children[1].children[0].rotation.x,
+						this.human.children[0].children[1].children[0].rotation.y,
+						this.human.children[0].children[1].children[0].rotation.z
+					);
+					this.human_clone.children[0].children[2].rotation.set(
+						this.human.children[0].children[2].rotation.x,
+						this.human.children[0].children[2].rotation.y,
+						this.human.children[0].children[2].rotation.z
+					);
+					this.human_clone.children[0].children[2].children[0].rotation.set(
+						this.human.children[0].children[2].children[0].rotation.x,
+						this.human.children[0].children[2].children[0].rotation.y,
+						this.human.children[0].children[2].children[0].rotation.z
+					);
+					this.human_clone.children[1].rotation.set(
+						this.human.children[1].rotation.x,
+						this.human.children[1].rotation.y,
+						this.human.children[1].rotation.z
+					);
+					this.human_clone.children[1].children[0].rotation.set(
+						this.human.children[1].children[0].rotation.x,
+						this.human.children[1].children[0].rotation.y,
+						this.human.children[1].children[0].rotation.z
+					);
+					this.human_clone.children[1].children[0].children[0].rotation.set(
+						this.human.children[1].children[0].children[0].rotation.x,
+						this.human.children[1].children[0].children[0].rotation.y,
+						this.human.children[1].children[0].children[0].rotation.z
+					);
+					this.human_clone.children[1].children[1].rotation.set(
+						this.human.children[1].children[1].rotation.x,
+						this.human.children[1].children[1].rotation.y,
+						this.human.children[1].children[1].rotation.z
+					);
+					this.human_clone.children[1].children[1].children[0].rotation.set(
+						this.human.children[1].children[1].children[0].rotation.x,
+						this.human.children[1].children[1].children[0].rotation.y,
+						this.human.children[1].children[1].children[0].rotation.z
+					);
+
+
 					this.controls.update();
 					this.renderer.render(this.scene, this.camera);
 					//console.log("from FrameSelecte");
@@ -197,34 +457,34 @@ window.onload = function(){
 					//検索した部位は[selected_parts]に保持
 					switch(this.selected_parts_name){
 						case 'body':
-							this.selected_parts = this.human.children[0];
+							this.selected_parts = this.human_clone.children[0];
 							break;
 						case 'right_arm_1':
-							this.selected_parts = this.human.children[0].children[1];
+							this.selected_parts = this.human_clone.children[0].children[1];
 							break;
 						case 'right_arm_2':
-							this.selected_parts = this.human.children[0].children[1].children[0];
+							this.selected_parts = this.human_clone.children[0].children[1].children[0];
 							break;
 						case 'left_arm_1':
-							this.selected_parts = this.human.children[0].children[2];
+							this.selected_parts = this.human_clone.children[0].children[2];
 							break;
 						case 'left_arm_2':
-							this.selected_parts = this.human.children[0].children[2].children[0];
+							this.selected_parts = this.human_clone.children[0].children[2].children[0];
 							break;
 						case 'waist':
-							this.selected_parts = this.human.children[1];
+							this.selected_parts = this.human_clone.children[1];
 							break;
 						case 'right_foot_1':
-							this.selected_parts =  this.human.children[1].children[0];
+							this.selected_parts =  this.human_clone.children[1].children[0];
 							break;
 						case 'right_foot_2':
-							this.selected_parts = this.human.children[1].children[0].children[0];
+							this.selected_parts = this.human_clone.children[1].children[0].children[0];
 							break;
 						case 'left_foot_1':
-							this.selected_parts = this.human.children[1].children[1];
+							this.selected_parts = this.human_clone.children[1].children[1];
 							break;
 						case 'left_foot_2':
-							this.selected_parts = this.human.children[1].children[1].children[0];
+							this.selected_parts = this.human_clone.children[1].children[1].children[0];
 							break;
 						default:
 							console.log("Error!");
@@ -248,57 +508,58 @@ window.onload = function(){
 					};
 				},
 				//角度バーが変わった時、描画中のオブジェクトに反映
+				//また、回転数を記録し更新確定時には元に戻す
 				changePartsRotation:function(e){
 					//selected_parts_nameの中身によって分岐を作り、
 					//各々でthis.humanに干渉する
 					switch(this.selected_parts_name){
 						case 'body':
-							this.human.children[0].rotation.set(
+							this.human_clone.children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'right_arm_1':
-							this.human.children[0].children[1].rotation.set(
+							this.human_clone.children[0].children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'right_arm_2':
-							this.human.children[0].children[1].children[0].rotation.set(
+							this.human_clone.children[0].children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'left_arm_1':
-							this.human.children[0].children[2].rotation.set(
+							this.human_clone.children[0].children[2].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'left_arm_2':
-							this.human.children[0].children[2].children[0].rotation.set(
+							this.human_clone.children[0].children[2].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'waist':
-							this.human.children[1].rotation.set(
+							this.human_clone.children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'right_foot_1':
-							this.human.children[1].children[0].rotation.set(
+							this.human_clone.children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'right_foot_2':
-							this.human.children[1].children[0].children[0].rotation.set(
+							this.human_clone.children[1].children[0].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'left_foot_1':
-							this.human.children[1].children[1].rotation.set(
+							this.human_clone.children[1].children[1].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
 						case 'left_foot_2':
-							this.human.children[1].children[1].children[0].rotation.set(
+							this.human_clone.children[1].children[1].children[0].rotation.set(
 								this.rotationX_bar,this.rotationY_bar,this.rotationZ_bar
 							);
 							break;
@@ -313,6 +574,7 @@ window.onload = function(){
 				//更新ボタンが押された時、更新内容を作成しDBに反映
 				makeUpdates:function(e){
 					console.log("makeUpdates");
+
 					//swicthを用いて、keyframetracksの中から指定部位のキーフレームトラック
 					//の3軸のインデックスナンバーを持ってくる
 					switch(this.selected_parts_name){
@@ -388,7 +650,7 @@ window.onload = function(){
 								updates[this.selected_parts_name+"/x/values"] = this.keyframetracks[keyframetrack_indexX].values;
 								break;
 							}else if(i == this.keyframetracks[keyframetrack_indexX].times.length - 1){
-								//最後尾にtimes,valuesそれぞれbar_value,rotationX_barの値を追加
+								//最後尾にtimes,valuesそれぞれbar_value,rotationX_barの値を末尾に追加
 								this.keyframetracks[keyframetrack_indexX].times.push(this.bar_value);
 								this.keyframetracks[keyframetrack_indexX].values.push(this.rotationX_bar);
 								updates[this.selected_parts_name+"/x/times"] = this.keyframetracks[keyframetrack_indexX].times;
@@ -448,6 +710,12 @@ window.onload = function(){
 
 					console.log(updates);
 					console.log("アニメーションを上記の内容で変更");
+					this.reset_flag = true;
+
+					//お試し
+					this.controls.update();
+					this.renderer.render(this.scene, this.camera);
+
 					renewDB(updates);
 				}
 
@@ -544,9 +812,10 @@ window.onload = function(){
         left_foot_1.position.set(25,0,0);
         waist.add(left_foot_1);
 
-        this.scene.add(this.human);
-
-
+				this.human_clone = this.human.clone();
+				//humanは再生時のみaddする
+				this.scene.add(this.human_clone);
+				//this.scene.add(this.human);
 
         //これより以下でfssからアニメーションクリップを作成
 				//各部位毎-各軸毎にKeyframeTrackJSONを作成
@@ -845,7 +1114,6 @@ window.onload = function(){
 				this.keyframetracks[29].values = fss.child('AnimationClip/left_foot_2/z/values').val();
 
 
-
 				//clipJSONをkeyframetracksから作成
 				var clipJSON_Human = {
 					duration: -1,
@@ -925,12 +1193,11 @@ window.onload = function(){
 				this.clips.push(clip_RightFoot);
 				this.clips.push(clip_LeftFoot);
 
-
 				var human_mixer = new THREE.AnimationMixer(this.human);
-		    var right_arm_mixer = new THREE.AnimationMixer(right_arm_1);
-		    var left_arm_mixer = new THREE.AnimationMixer(left_arm_1);
-		    var right_foot_mixer = new THREE.AnimationMixer(right_foot_1);
-		    var left_foot_mixer = new THREE.AnimationMixer(left_foot_1);
+		    var right_arm_mixer = new THREE.AnimationMixer(this.human.children[0].children[1]);
+		    var left_arm_mixer = new THREE.AnimationMixer(this.human.children[0].children[2]);
+		    var right_foot_mixer = new THREE.AnimationMixer(this.human.children[1].children[0]);
+		    var left_foot_mixer = new THREE.AnimationMixer(this.human.children[1].children[1]);
 				this.mixers.push(human_mixer);
 				this.mixers.push(right_arm_mixer);
 				this.mixers.push(left_arm_mixer);
