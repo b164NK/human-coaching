@@ -276,9 +276,8 @@ window.onload = function(){
 					this.actions[3].play();
 					this.actions[4].play();
 
-					//フレーム数が指定されていたら...
+					alert('Databaseが更新されました');
 
-					//部位が選択されていたら...
 
         },
 				//Orbit操作に対して描画を更新するためのメソッド
