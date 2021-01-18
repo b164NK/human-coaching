@@ -1,4 +1,8 @@
 window.onload = function(){
+	//ローディング画面のDOM要素を所得
+	const spinner = document.getElementById('loading');
+
+
   //タッチイベントが利用可能かどうかの判別
 	var supportTouch = 'ontouchend' in document;
 
@@ -57,9 +61,9 @@ window.onload = function(){
         human:        				new THREE.Group(),
 				//編集用のhuman
 				human_clone:					0,
-				mouse:								new THREE.Vector2(),
-				raycaster: 						new THREE.Raycaster(),
-				intersects:						0,
+				//mouse:								new THREE.Vector2(),
+				//raycaster: 						new THREE.Raycaster(),
+				//intersects:						0,
 				//キーフレームトラックを保持(データベースとのデータ共有に使用)
 				keyframetracks:				[],
         //アニメーションクリップを保持(データベースとのデータ共有に使用)
@@ -276,8 +280,12 @@ window.onload = function(){
 					this.actions[3].play();
 					this.actions[4].play();
 
+					//データベース変更が発生したことをユーザーに知らせるようにしたい
 					alert('Databaseが更新されました');
 
+					//フレーム数が指定されていたら...
+
+					//部位が選択されていたら...
 
         },
 				//Orbit操作に対して描画を更新するためのメソッド
@@ -710,6 +718,8 @@ window.onload = function(){
 					console.log(updates);
 					console.log("アニメーションを上記の内容で変更");
 					this.reset_flag = true;
+
+					//selected_parts_rotX等の修正
 
 					//お試し
 					this.controls.update();
@@ -1237,6 +1247,8 @@ window.onload = function(){
 				this.canvas.addEventListener(this.eventstart,
 					this.OrbitStart,{passive:false});
 
+
+				spinner.classList.add('loaded');
       }
     });
   };
