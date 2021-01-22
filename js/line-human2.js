@@ -2,7 +2,6 @@ window.onload = function(){
 	//ローディング画面のDOM要素を所得
 	const spinner = document.getElementById('loading');
 
-
   //タッチイベントが利用可能かどうかの判別
 	var supportTouch = 'ontouchend' in document;
 
@@ -61,9 +60,6 @@ window.onload = function(){
         human:        				new THREE.Group(),
 				//編集用のhuman
 				human_clone:					0,
-				//mouse:								new THREE.Vector2(),
-				//raycaster: 						new THREE.Raycaster(),
-				//intersects:						0,
 				//キーフレームトラックを保持(データベースとのデータ共有に使用)
 				keyframetracks:				[],
         //アニメーションクリップを保持(データベースとのデータ共有に使用)
@@ -1236,17 +1232,12 @@ window.onload = function(){
 				this.actions[3].play();
 				this.actions[4].play();
 
-
-
 				this.controls.update();
         this.renderer.render(this.scene, this.camera);
-
-
 
 				this.controls.enabled = true;
 				this.canvas.addEventListener(this.eventstart,
 					this.OrbitStart,{passive:false});
-
 
 				spinner.classList.add('loaded');
       }
