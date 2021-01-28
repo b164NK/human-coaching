@@ -57,14 +57,18 @@ body {
 /* メディアクエリで画面を整形 PCファースト方式*/
 @media screen and (max-width: 660px) {
 	/* スマホ用　*/
+
+	#canvas{
+		max-width: 300px;
+		max-height: 300px;
+	}
+}
+@media screen and (max-width: 620px) {
 	#app{
 		display:	block;
 	}
 	#smart-flex{
 		display: flex;
 	}
-	#canvas{
-		max-width: 300px;
-		max-height: 300px;
-	}
+
 }
