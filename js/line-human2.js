@@ -166,7 +166,7 @@ window.onload = function(){
 
 					//clipJSONをkeyframetracksから作成
 					var clipJSON_Human = {
-					  duration: -1,
+					  duration: 4,
 					  name:"human_animation",
 					  tracks: [
 					    this.keyframetracks[0],
@@ -179,7 +179,7 @@ window.onload = function(){
 					  ]
 					};
 					var clipJSON_RightArm = {
-					  duration: -1,
+					  duration: 4,
 					  name:"right_arm_animation",
 					  tracks: [
 					    this.keyframetracks[3],
@@ -192,7 +192,7 @@ window.onload = function(){
 					  ]
 					};
 					var clipJSON_LeftArm = {
-					  duration: -1,
+					  duration: 4,
 					  name:"left_arm_animation",
 					  tracks: [
 					    this.keyframetracks[9],
@@ -205,7 +205,7 @@ window.onload = function(){
 					  ]
 					};
 					var clipJSON_RightFoot = {
-					  duration: -1,
+					  duration: 4,
 					  name:"right_foot_animation",
 					  tracks: [
 					    this.keyframetracks[18],
@@ -218,7 +218,7 @@ window.onload = function(){
 					  ]
 					};
 					var clipJSON_LeftFoot = {
-					  duration: -1,
+					  duration: 4,
 					  name:"left_foot_animation",
 					  tracks: [
 					    this.keyframetracks[24],
@@ -1121,7 +1121,7 @@ window.onload = function(){
 
 				//clipJSONをkeyframetracksから作成
 				var clipJSON_Human = {
-					duration: -1,
+					duration: 4,
 					name:"human_animation",
 					tracks: [
 						this.keyframetracks[0],
@@ -1134,7 +1134,7 @@ window.onload = function(){
 					]
 				};
 				var clipJSON_RightArm = {
-					duration: -1,
+					duration: 4,
 					name:"right_arm_animation",
 					tracks: [
 						this.keyframetracks[3],
@@ -1147,7 +1147,7 @@ window.onload = function(){
 					]
 				};
 				var clipJSON_LeftArm = {
-					duration: -1,
+					duration: 4,
 					name:"left_arm_animation",
 					tracks: [
 						this.keyframetracks[9],
@@ -1160,7 +1160,7 @@ window.onload = function(){
 					]
 				};
 				var clipJSON_RightFoot = {
-					duration: -1,
+					duration: 4,
 					name:"right_foot_animation",
 					tracks: [
 						this.keyframetracks[18],
@@ -1173,7 +1173,7 @@ window.onload = function(){
 					]
 				};
 				var clipJSON_LeftFoot = {
-					duration: -1,
+					duration: 4,
 					name:"left_foot_animation",
 					tracks: [
 						this.keyframetracks[24],
